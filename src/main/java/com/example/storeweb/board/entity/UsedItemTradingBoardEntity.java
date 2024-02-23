@@ -1,0 +1,35 @@
+package com.example.storeweb.board.entity;
+
+
+import com.example.storeweb.auth.entity.TenantEntity;
+import com.example.storeweb.common.entity.BaseEntity;
+import com.example.storeweb.status.entity.StatusEntity;
+import jakarta.persistence.*;
+import lombok.Getter;
+
+/**
+ * 중고거래 상품 목록
+ */
+
+@Getter
+@Entity
+public class UsedItemTradingBoardEntity extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private TenantEntity tenant;
+    private String title;
+    private String desc;
+
+    @Column(name = "min_amount",nullable = false)
+    private Integer minAmount;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private StatusEntity status;
+
+
+}
