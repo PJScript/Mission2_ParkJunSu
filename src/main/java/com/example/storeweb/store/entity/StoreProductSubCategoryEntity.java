@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "store_product_sub_category")
 public class StoreProductSubCategoryEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

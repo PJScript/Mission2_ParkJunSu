@@ -1,13 +1,14 @@
 package com.example.storeweb.auth.entity;
 
+
 import com.example.storeweb.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
 
-@Getter
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "tenant_account_general")
-public class TenantAccountGeneralEntity extends BaseEntity {
+@Table(name = "refresh_token")
+public class RefreshTokenEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +17,9 @@ public class TenantAccountGeneralEntity extends BaseEntity {
     @JoinColumn(name = "tenant_id", referencedColumnName = "id")
     private TenantEntity tenant;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private TenantAccountGeneralEntity tenantAccountGeneral;
+    @Column(name = "expire_date", nullable = false)
+    private LocalDateTime expireDate;
+
+
+
 }

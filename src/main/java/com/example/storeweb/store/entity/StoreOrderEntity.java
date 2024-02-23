@@ -12,6 +12,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "store_order")
 public class StoreOrderEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

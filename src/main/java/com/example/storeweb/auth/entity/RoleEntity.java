@@ -9,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@Table(name = "role")
 public class RoleEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

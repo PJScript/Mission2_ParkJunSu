@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "activity")
 public class ActivityEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

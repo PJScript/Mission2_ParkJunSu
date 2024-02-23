@@ -1,5 +1,7 @@
 package com.example.storeweb.auth.controller;
 
+import com.example.storeweb.auth.dto.LoginRequestDto;
+import com.example.storeweb.auth.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +16,33 @@ import org.springframework.web.bind.annotation.*;
  * */
 
 @Slf4j
-@AllArgsConstructor
 @RequiredArgsConstructor
-@RestController("/v1/auth")
+@RestController
+@RequestMapping("/v1/auth")
 public class TenantController {
+    private final AuthService authService;
+
+    @GetMapping("/test")
+    public String test(){
+        log.debug("test");
+        return "test";
+    }
+    /**
+     * 로그인 엔드포인트
+     * */
+    @PostMapping("/login")
+    public void login(
+            @RequestBody
+            LoginRequestDto dto
+    ) {
+        log.debug("account:", dto.getAccount());
+        log.debug("password: ", dto.getPassword());
+        String token = authService.login(dto);
+        log.debug(token);
+
+
+    }
+
 
     /**
      * 유저조회 엔드포인트
@@ -53,8 +78,6 @@ public class TenantController {
         log.debug("password" + password);
       // TODO: 회원가입시 보내온 password를 암호화 하여 DB에 저장하고 이때 uuid 생성하여 uuid 필드에 같이 저장
     }
-
-
 
 
 

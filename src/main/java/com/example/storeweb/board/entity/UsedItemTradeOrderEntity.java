@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "used_item_trade_order")
 public class UsedItemTradeOrderEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

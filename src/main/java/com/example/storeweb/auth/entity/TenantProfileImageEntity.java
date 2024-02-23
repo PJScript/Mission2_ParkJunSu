@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "tenant_profile_image")
 public class TenantProfileImageEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

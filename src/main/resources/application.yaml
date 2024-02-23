@@ -1,4 +1,17 @@
+
+jwt:
+# 헤더이름
+  header: Authorization
+# jwt 생성시 넣을 salt
+  secret: QjJkdnZkYWxxbzIzNEIzdjIxNGs2bzlWQzBhYTlhYWxkMTEyMkppa2lraWxsYW9pZTE=
+# 유효시간
+  expire_time: 600 # 10 min
+
 spring:
+  security:
+    user:
+      name: user
+      password: password
   datasource:
     url: jdbc:sqlite:db.sqlite
     driver-class-name: org.sqlite.JDBC
@@ -7,7 +20,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
 
