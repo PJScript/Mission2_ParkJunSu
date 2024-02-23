@@ -8,13 +8,17 @@ import java.util.List;
 
 @Getter
 @Entity
+@Table(name = "tenant")
 public class TenantEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "tenantAccountGeneral")
-    private List<TenantAccountGeneralEntity> tenantAccountGenerals;
+    @OneToMany(mappedBy = "tenant")
+    private List<TenantAccountGeneralEntity> tenantAccountGeneralEntities;
+
+    @OneToMany(mappedBy = "tenant")
+    private List<TenantAccountBuiesnessEntity> tenantAccountBuiesnessEntities;
 
 
     @ManyToOne
