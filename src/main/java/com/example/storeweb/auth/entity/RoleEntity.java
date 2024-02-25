@@ -4,11 +4,13 @@ package com.example.storeweb.auth.entity;
 import com.example.storeweb.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Entity
+@ToString
 @Table(name = "role")
 public class RoleEntity extends BaseEntity {
     @Id
