@@ -5,6 +5,7 @@ import com.example.storeweb.auth.dto.LoginResponseDto;
 import com.example.storeweb.auth.service.AuthService;
 import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.utils.dto.TokenInfoDto;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,7 @@ public class TenantController {
         log.debug("uuid:" + uuid);
         // TODO: JWT로 받아온 값을 해석하여 유저 고유값인 uuid와 대조한 후 정보 전달
 
-//        authService.getUserInfo(uuid,jwt)
+        authService.getUserInfo(uuid);
     }
 
     /**

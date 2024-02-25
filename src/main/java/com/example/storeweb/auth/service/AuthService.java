@@ -3,6 +3,7 @@ package com.example.storeweb.auth.service;
 import com.example.storeweb.auth.dto.LoginRequestDto;
 import com.example.storeweb.auth.dto.LoginResponseDto;
 import com.example.storeweb.auth.dto.TenantDto;
+import com.example.storeweb.auth.dto.UserInfoDto;
 import com.example.storeweb.auth.entity.TenantEntity;
 import com.example.storeweb.auth.repo.TenantRepository;
 import com.example.storeweb.common.dto.BaseResponseDto;
@@ -57,7 +58,10 @@ public class AuthService implements AuthServiceImpl{
     }
 
     @Transactional
-    public String getUserInfo(String uuid){
-        return "1";
+    public void getUserInfo(String uuid){
+        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid);
+//        System.out.println(tenant.toString());
+
+
     }
 }

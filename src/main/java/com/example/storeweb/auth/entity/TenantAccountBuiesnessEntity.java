@@ -13,14 +13,14 @@ public class TenantAccountBuiesnessEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", referencedColumnName = "id")
     private TenantEntity tenant;
 
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private RoleEntity role;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "role_id", referencedColumnName = "id")
+//    private RoleEntity role;
 
 
     @Column(name = "buisness_number", nullable = false)
