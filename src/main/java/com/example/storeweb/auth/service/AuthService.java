@@ -1,10 +1,13 @@
 package com.example.storeweb.auth.service;
 
 import com.example.storeweb.auth.dto.LoginRequestDto;
+import com.example.storeweb.auth.dto.LoginResponseDto;
 import com.example.storeweb.auth.dto.TenantDto;
 import com.example.storeweb.auth.entity.TenantEntity;
 import com.example.storeweb.auth.repo.TenantRepository;
+import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.utils.JwtUtil;
+import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,7 @@ public class AuthService implements AuthServiceImpl{
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public String login(
+    public BaseResponseDto<TokenInfoDto> login(
         LoginRequestDto dto
     ) {
         String account = dto.getAccount();
@@ -34,15 +37,27 @@ public class AuthService implements AuthServiceImpl{
         }
 
         if(!password.equals(tenant.getPassword())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return BaseResponseDto.of(401,"아이디 혹은 비밀번호가 일치하지 않습니다.",null);
+
         }
 
         TenantDto info = new TenantDto(tenant.getUuid());
-        String accessToken = jwtUtil.createAccessToken(info);
-
-        log.debug("accessToken: ", accessToken);
+        TokenInfoDto tokenInfo = jwtUtil.createAccessToken(info);
 
 
-        return accessToken;
+
+        TokenInfoDto tokenInfoDto = new TokenInfoDto(
+                tokenInfo.getAccessToken(),
+                tokenInfo.getCreateDate(),
+                tokenInfo.getExpireDate(),
+                tokenInfo.getExpireTimeSecondFormat()
+        );
+
+        return BaseResponseDto.of(200,"success",tokenInfoDto);
+    }
+
+    @Transactional
+    public String getUserInfo(String uuid){
+        return "1";
     }
 }

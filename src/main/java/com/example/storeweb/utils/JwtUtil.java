@@ -2,6 +2,7 @@ package com.example.storeweb.utils;
 
 import com.example.storeweb.auth.dto.TenantDto;
 import com.example.storeweb.auth.entity.TenantEntity;
+import com.example.storeweb.utils.dto.TokenInfoDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -44,7 +46,7 @@ public class JwtUtil {
      * @param tenant
      * @return Access Token String
      */
-    public String createAccessToken(TenantDto tenant) {
+    public TokenInfoDto createAccessToken(TenantDto tenant) {
         return createToken(tenant, accessTokenExpTime);
     }
 
@@ -55,7 +57,7 @@ public class JwtUtil {
      * @param expireTime
      * @return JWT String
      */
-    private String createToken(TenantDto tenant, long expireTime) {
+    private TokenInfoDto createToken(TenantDto tenant, long expireTime) {
         Claims claims = Jwts.claims();
         claims.put("uuid", tenant.getUuid());
 
@@ -63,13 +65,22 @@ public class JwtUtil {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
 
-
-        return Jwts.builder()
+        String accessToken =  Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(Date.from(now.toInstant()))
                 .setExpiration(Date.from(tokenValidity.toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        LocalDateTime expireDate = LocalDateTime.now().plusSeconds(expireTime);
+        return new TokenInfoDto(
+                accessToken,
+                LocalDateTime.now(),
+                expireDate,
+                expireTime
+        );
+
+
     }
 
 

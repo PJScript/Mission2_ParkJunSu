@@ -1,7 +1,10 @@
 package com.example.storeweb.auth.controller;
 
 import com.example.storeweb.auth.dto.LoginRequestDto;
+import com.example.storeweb.auth.dto.LoginResponseDto;
 import com.example.storeweb.auth.service.AuthService;
+import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.utils.dto.TokenInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,22 +30,21 @@ public class TenantController {
         log.debug("test");
         return "test";
     }
+
     /**
      * 로그인 엔드포인트
      * */
     @PostMapping("/login")
-    public void login(
+    public BaseResponseDto<TokenInfoDto> login(
             @RequestBody
             LoginRequestDto dto
     ) {
-        log.debug("account:", dto.getAccount());
-        log.debug("password: ", dto.getPassword());
-        String token = authService.login(dto);
-        log.debug(token);
+        log.info("account:" + dto.getAccount());
+        log.info("password: " + dto.getPassword());
 
 
+        return authService.login(dto);
     }
-
 
     /**
      * 유저조회 엔드포인트
@@ -55,11 +57,14 @@ public class TenantController {
      * */
     @GetMapping("/user/{uuid}")
     public void getUser(
+
             @PathVariable("uuid")
             String uuid
     ) {
         log.debug("uuid:" + uuid);
         // TODO: JWT로 받아온 값을 해석하여 유저 고유값인 uuid와 대조한 후 정보 전달
+
+//        authService.getUserInfo(uuid,jwt)
     }
 
     /**
