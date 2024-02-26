@@ -11,6 +11,7 @@ import com.example.storeweb.utils.JwtUtil;
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -58,8 +59,38 @@ public class AuthService implements AuthServiceImpl{
     }
 
     @Transactional
-    public void getUserInfo(String uuid){
-        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid);
+    public UserInfoDto getUserInfo(String jwt){
+        System.out.println(jwtUtil.validateToken(jwt.split(" ")[1]) + " Validate");
+
+        // Bearer 접두사를 제외한 순수 토큰 분리
+        String token = jwt.split(" ")[1];
+        String tokenUuid = "";
+
+        // 토큰이 유효하면 해당 토큰에 들어있는 UUID 추출
+        if(jwtUtil.validateToken(token)){
+            tokenUuid = jwtUtil.getUserUuId(token);
+            System.out.println("Token UUID: " + tokenUuid);
+        }
+
+        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(tokenUuid);
+        return UserInfoDto.builder()
+                .uuid(tenant.getUuid())
+                .account(tenant.getAccount())
+                .address(tenant.getAddress())
+                .addressDetail(tenant.getAddressDetail())
+                .age(tenant.getAge())
+                .email(tenant.getEmail())
+                .name(tenant.getName())
+                .nickname(tenant.getNickname())
+                .phone1(tenant.getPhone1())
+                .phone2(tenant.getPhone2())
+                .profileImageUrl(tenant.getProfileImageUrl())
+                .privinceLevelDivision(tenant.getPrivinceLevelDivision())
+                .municipalLevelDivision(tenant.getMunicipalLevelDivision())
+                .subMunicipalLevelDivision(tenant.getSubMunicipalLevelDivision())
+                .build();
+
+
 //        System.out.println(tenant.toString());
 
 

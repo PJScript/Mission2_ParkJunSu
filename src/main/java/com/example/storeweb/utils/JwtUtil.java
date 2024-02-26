@@ -87,10 +87,10 @@ public class JwtUtil {
     /**
      * Token에서  uuid 추출
      * @param token
-     * @return User ID
+     * @return User UUID
      */
-    public Long getUserId(String token) {
-        return parseClaims(token).get("uuid", Long.class);
+    public String getUserUuId(String token) {
+        return parseClaims(token).get("uuid", String.class);
     }
 
 
