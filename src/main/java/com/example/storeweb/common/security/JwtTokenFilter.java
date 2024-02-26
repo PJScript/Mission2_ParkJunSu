@@ -1,15 +1,17 @@
-package com.example.storeweb.jwt;
+package com.example.storeweb.common.security;
 
 
+import com.example.storeweb.domain.auth.service.CustomUserDetailsService;
 import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.CustomJwtException;
 import com.example.storeweb.exception.GlobalException;
 import com.example.storeweb.utils.JwtUtil;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -28,19 +30,13 @@ import java.util.List;
 
 
 @Slf4j
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtUtil JwtUtil;
     // 사용자 정보를 찾기위한 UserDetailsService 또는 Manager
-    private final UserDetailsManager manager;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtTokenFilter(
-            JwtUtil jwtTokenUtils,
-            UserDetailsManager manager
-    ) {
-        this.JwtUtil = jwtTokenUtils;
-        this.manager = manager;
-    }
+
 
     @Override
     protected void doFilterInternal(
@@ -50,7 +46,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         // 검증이 필요 없는 엔드포인트를 기록
-        List<String> list = Arrays.asList(
+        List<String> list = List.of(
                 "/v1/auth/login"
         );
 
@@ -63,23 +59,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Authorization 헤더가 없다면 Exception 발생
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
-           throw new CustomException(GlobalException.TOKEN_NOT_FOUND);
+           throw new CustomJwtException(GlobalException.TOKEN_NOT_FOUND);
         }
 
         // Authorization 헤더가 올바르지 않으면 Exception 발생
         if(!authHeader.startsWith("Bearer ")){
-            throw new CustomException(GlobalException.TOKEN_NOT_FOUND);
+            throw new CustomJwtException(GlobalException.TOKEN_NOT_FOUND);
         }
 
         String token = authHeader.split(" ")[1];
 
+        log.info(token + ": 토큰");
+        if(token.isEmpty()){
+            throw new CustomJwtException(GlobalException.TOKEN_NOT_FOUND);
+        }
+
+
         if (JwtUtil.validateToken(token)) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
-            String uuid = JwtUtil
-                    .parseClaims(token)
-                    .getSubject();
+            String uuid = JwtUtil.getUserUuId(token);
 
-            UserDetails userDetails = manager.loadUserByUsername(uuid);
+            log.info(uuid + "UUID");
+
+            UserDetails userDetails = customUserDetailsService.loadUserByTenantUuid(uuid);
             for (GrantedAuthority authority :userDetails.getAuthorities()) {
                 log.info("authority: {}", authority.getAuthority());
             }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Entity
@@ -31,5 +32,7 @@ public class RoleEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "role")
     private List<ActivityEntity> activities;
+
+
 
 }

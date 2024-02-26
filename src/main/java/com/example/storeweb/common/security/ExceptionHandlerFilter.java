@@ -1,6 +1,8 @@
-package com.example.storeweb.exception;
+package com.example.storeweb.common.security;
 
 import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.exception.CustomException;
+import com.example.storeweb.exception.CustomJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +24,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
-        } catch (JwtException ex) {
+        } catch (JwtException | CustomException ex) {
             setErrorResponse(HttpStatus.UNAUTHORIZED, request, response, ex);
         }
     }

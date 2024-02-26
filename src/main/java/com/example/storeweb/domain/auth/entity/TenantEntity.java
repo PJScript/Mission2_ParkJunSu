@@ -3,13 +3,14 @@ package com.example.storeweb.domain.auth.entity;
 import com.example.storeweb.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "tenant")
-
+@ToString
 public class TenantEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,31 +79,5 @@ public class TenantEntity extends BaseEntity {
     private String subMunicipalLevelDivision;
 
 
-    @Override
-    public String toString() {
-        return "TenantEntity{" +
-                "id=" + id +
-                ", tenantAccountGeneralEntities=" + tenantAccountGeneralEntities +
-                ", tenantAccountBuiesnessEntities=" + tenantAccountBuiesnessEntities +
-                ", role=" + role +
-                ", tenantType=" + tenantType +
-                ", uuid='" + uuid + '\'' +
-                ", account='" + account + '\'' +
-                ", password='" + password + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", name='" + name + '\'' +
-                ", age='" + age + '\'' +
-                ", email='" + email + '\'' +
-                ", phone1='" + phone1 + '\'' +
-                ", phone2='" + phone2 + '\'' +
-                ", profileImageUrl='" + profileImageUrl + '\'' +
-                ", isIntegrate=" + isIntegrate +
-                ", loginType=" + loginType +
-                ", address='" + address + '\'' +
-                ", addressDetail='" + addressDetail + '\'' +
-                ", privinceLevelDivision='" + privinceLevelDivision + '\'' +
-                ", municipalLevelDivision='" + municipalLevelDivision + '\'' +
-                ", subMunicipalLevelDivision='" + subMunicipalLevelDivision + '\'' +
-                '}';
-    }
+
 }
