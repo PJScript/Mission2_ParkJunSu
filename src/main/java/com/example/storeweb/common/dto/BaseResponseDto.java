@@ -1,8 +1,8 @@
 package com.example.storeweb.common.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.*;
 
 
 /**
@@ -12,9 +12,20 @@ import lombok.Setter;
  * */
 @Getter
 @Setter
-@RequiredArgsConstructor(staticName = "of")
+@ToString
+@Builder
 public class BaseResponseDto<D> {
-    private final Integer status;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+
+    private final int status;
     private final String message;
     private final D data;
+    private final String path;
+    private final String error;
+    private final String timestamp;
+
+    public String convertToJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
+    }
 }

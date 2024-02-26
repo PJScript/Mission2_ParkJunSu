@@ -1,7 +1,6 @@
 package com.example.storeweb.utils;
 
-import com.example.storeweb.auth.dto.TenantDto;
-import com.example.storeweb.auth.entity.TenantEntity;
+import com.example.storeweb.domain.auth.dto.TenantDto;
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -29,7 +28,7 @@ public class JwtUtil {
     /**
      * {jwt.secret} - application.yaml에 정의한 secret 입니다. <br />
      * {jwt.expire_time} - application.yaml에 정의한 토큰 만료시간 입니다.
-     * */
+     */
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.expire_time}") long accessTokenExpTime
@@ -43,6 +42,7 @@ public class JwtUtil {
 
     /**
      * Access Token 생성
+     *
      * @param tenant
      * @return Access Token String
      */
@@ -53,6 +53,7 @@ public class JwtUtil {
 
     /**
      * JWT 생성
+     *
      * @param tenant
      * @param expireTime
      * @return JWT String
@@ -65,7 +66,7 @@ public class JwtUtil {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
 
-        String accessToken =  Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(Date.from(now.toInstant()))
                 .setExpiration(Date.from(tokenValidity.toInstant()))
@@ -86,6 +87,7 @@ public class JwtUtil {
 
     /**
      * Token에서  uuid 추출
+     *
      * @param token
      * @return User UUID
      */
@@ -96,6 +98,7 @@ public class JwtUtil {
 
     /**
      * JWT 검증
+     *
      * @param token
      * @return IsValidate
      */
@@ -107,13 +110,23 @@ public class JwtUtil {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+//            throw new TokenNotValidateException("Unsupported JWT Token");
+
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
+//            throw new TokenNotValidateException("JWT claims string is empty");
+
         }
         return false;
     }
+
+
+
+
+
 
 
     /**
