@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -66,23 +67,23 @@ public class AuthService implements AuthServiceImpl{
             System.out.println("Token UUID: " + tokenUuid);
         }
 
-        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(tokenUuid);
-        return UserInfoDto.builder()
-                .uuid(tenant.getUuid())
-                .account(tenant.getAccount())
-                .address(tenant.getAddress())
-                .addressDetail(tenant.getAddressDetail())
-                .age(tenant.getAge())
-                .email(tenant.getEmail())
-                .name(tenant.getName())
-                .nickname(tenant.getNickname())
-                .phone1(tenant.getPhone1())
-                .phone2(tenant.getPhone2())
-                .profileImageUrl(tenant.getProfileImageUrl())
-                .privinceLevelDivision(tenant.getPrivinceLevelDivision())
-                .municipalLevelDivision(tenant.getMunicipalLevelDivision())
-                .subMunicipalLevelDivision(tenant.getSubMunicipalLevelDivision())
-                .build();
+        Optional<TenantEntity> tenant = tenantRepository.findTenantEntityByUuid(tokenUuid);
+        return tenant.map(tenantEntity -> UserInfoDto.builder()
+                .uuid(tenantEntity.getUuid())
+                .account(tenantEntity.getAccount())
+                .address(tenantEntity.getAddress())
+                .addressDetail(tenantEntity.getAddressDetail())
+                .age(tenantEntity.getAge())
+                .email(tenantEntity.getEmail())
+                .name(tenantEntity.getName())
+                .nickname(tenantEntity.getNickname())
+                .phone1(tenantEntity.getPhone1())
+                .phone2(tenantEntity.getPhone2())
+                .profileImageUrl(tenantEntity.getProfileImageUrl())
+                .privinceLevelDivision(tenantEntity.getPrivinceLevelDivision())
+                .municipalLevelDivision(tenantEntity.getMunicipalLevelDivision())
+                .subMunicipalLevelDivision(tenantEntity.getSubMunicipalLevelDivision())
+                .build()).orElse(null);
 
 
 //        System.out.println(tenant.toString());

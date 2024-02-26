@@ -13,7 +13,7 @@ public class ActivityEntity extends BaseEntity {
     private Long id;
 
     // role_id @ManyToOne
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private RoleEntity role;
 
@@ -24,4 +24,6 @@ public class ActivityEntity extends BaseEntity {
 
     @Column(name = "url_pattern", nullable = false)
     private String urlPattern;
+
+
 }

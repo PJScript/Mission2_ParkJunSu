@@ -29,3 +29,4 @@ public class BaseResponseDto<D> {
         return objectMapper.writeValueAsString(this);
     }
 }
+
