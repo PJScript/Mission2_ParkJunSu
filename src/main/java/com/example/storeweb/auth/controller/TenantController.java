@@ -2,6 +2,8 @@ package com.example.storeweb.auth.controller;
 
 import com.example.storeweb.auth.dto.LoginRequestDto;
 import com.example.storeweb.auth.dto.LoginResponseDto;
+import com.example.storeweb.auth.dto.UserInfoDto;
+import com.example.storeweb.auth.entity.TenantEntity;
 import com.example.storeweb.auth.service.AuthService;
 import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.utils.dto.TokenInfoDto;
@@ -51,21 +53,22 @@ public class TenantController {
      * 유저조회 엔드포인트
      *
      * <p>
-     * <b>uuid</B> 를 통해 타겟 유저의 정보를 가져옵니다.
+     * JWT로 전달받은 <b>uuid</B> 를 통해 타겟 유저의 정보를 가져옵니다.
      *
      * </p>
      *
      * */
-    @GetMapping("/user/{uuid}")
-    public void getUser(
+    @GetMapping("/user")
+    public BaseResponseDto<UserInfoDto> getUser(
+            @RequestHeader("Authorization")
+            String jwt
 
-            @PathVariable("uuid")
-            String uuid
     ) {
-        log.debug("uuid:" + uuid);
+        log.info("HEADER: "+ jwt);
+
         // TODO: JWT로 받아온 값을 해석하여 유저 고유값인 uuid와 대조한 후 정보 전달
 
-        authService.getUserInfo(uuid);
+        return BaseResponseDto.of(200,"조회성공",authService.getUserInfo(jwt));
     }
 
     /**

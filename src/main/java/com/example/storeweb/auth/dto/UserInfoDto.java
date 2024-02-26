@@ -2,12 +2,14 @@ package com.example.storeweb.auth.dto;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class UserInfoDto {
     private String uuid;
     private String account;
