@@ -32,12 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private TenantRepository tenantRepository;
     private RoleRepository roleRepository;
-    private ActivityRepository activityRepository;
 
 
     public UserDetails loadUserByTenantUuid(String uuid) throws UsernameNotFoundException {
         log.info("UUID-1 : " + uuid);
-        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid)
+        TenantEntity tenant = tenantRepository.findByUuid(uuid)
                 .orElseThrow(() -> new UsernameNotFoundException("Tenant not found with id: " + uuid));
 
 
@@ -49,7 +48,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         for (String role : roles) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
-        return new User(tenant.getName(), tenant.getPassword(), authorities);
+        return new User(
+                tenant.getUuid(), Optional.ofNullable(tenant.getEmail()).orElse(""), authorities);
+
     }
 
     @Override

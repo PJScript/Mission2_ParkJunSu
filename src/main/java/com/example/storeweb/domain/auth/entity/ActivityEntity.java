@@ -2,11 +2,15 @@ package com.example.storeweb.domain.auth.entity;
 
 import com.example.storeweb.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @Entity
+@RequiredArgsConstructor
 @Table(name = "activity")
+
 public class ActivityEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

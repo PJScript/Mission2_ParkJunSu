@@ -1,14 +1,11 @@
 package com.example.storeweb.domain.auth.controller;
 
-import com.example.storeweb.common.entity.BaseEntity;
 import com.example.storeweb.domain.auth.dto.LoginRequestDto;
 import com.example.storeweb.domain.auth.dto.TenantDto;
-import com.example.storeweb.domain.auth.dto.UserInfoDto;
 import com.example.storeweb.domain.auth.service.AuthService;
 import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.GlobalException;
-import com.example.storeweb.utils.JwtUtil;
 import com.example.storeweb.utils.TimeUtil;
 
 import com.example.storeweb.utils.dto.TokenInfoDto;
@@ -33,6 +30,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/v1/auth")
 public class AuthController {
     private final AuthService authService;
+    private final TimeUtil timeUtil;
 
     @GetMapping("/test")
     public String test() {
@@ -68,13 +66,13 @@ public class AuthController {
      * </p>
      */
     @GetMapping("/user")
-    public BaseResponseDto<UserInfoDto> getUser(
+    public BaseResponseDto<TenantDto.UserInfoDto> getUser(
             @RequestHeader("Authorization")
             String jwt,
             HttpServletRequest req
     ) {
         log.info("HEADER: " + jwt);
-        return BaseResponseDto.<UserInfoDto>builder()
+        return BaseResponseDto.<TenantDto.UserInfoDto>builder()
                 .status(200)
                 .message("Login Success")
                 .data(authService.getUserInfo(jwt, req))
@@ -88,7 +86,7 @@ public class AuthController {
      * 서비스를 이용하려면 닉네임,이름,연령대,이메일,전화번 정보를 추가해야합니다.</p>
      */
     @PostMapping("/join")
-    public BaseResponseDto<Object> join(
+    public BaseResponseDto<String> join(
             @RequestBody
             TenantDto.JoinRequestDto dto
     ) {
@@ -105,19 +103,35 @@ public class AuthController {
         log.debug("account" + dto.getAccount());
         log.debug("password" + dto.getPassword());
         if (authService.createPreActiveTenant(dto)) {
-            return BaseResponseDto.builder()
+            return BaseResponseDto.<String>builder()
                     .status(200)
                     .message("회원가입 성공")
                     .data(dto.getAccount())
                     .error(null)
                     .timestamp(timeUtil.getCurrentTimeString())
                     .build();
-        }else{
+        } else {
             throw new CustomException(GlobalException.BAD_REQUEST);
 
         }
 
         // TODO: 회원가입시 보내온 password를 암호화 하여 DB에 저장하고 이때 uuid 생성하여 uuid 필드에 같이 저장
+    }
+
+
+    @PutMapping("/user")
+    public BaseResponseDto<TenantDto.UserInfoDto> modifyTenant(
+            @RequestBody
+            TenantDto.UserInfoDto dto
+    ) {
+        TenantDto.UserInfoDto updatedUser = authService.modifyTenant(dto);
+        return BaseResponseDto.<TenantDto.UserInfoDto>builder()
+                .status(200)
+                .message("수정 완료")
+                .data(updatedUser)
+                .error(null)
+                .timestamp(timeUtil.getCurrentTimeString())
+                .build();
     }
 
 
