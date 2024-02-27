@@ -3,7 +3,11 @@ package com.example.storeweb.domain.auth.service;
 import com.example.storeweb.domain.auth.dto.LoginRequestDto;
 import com.example.storeweb.domain.auth.dto.TenantDto;
 import com.example.storeweb.domain.auth.dto.UserInfoDto;
+import com.example.storeweb.domain.auth.entity.RoleEntity;
+import com.example.storeweb.domain.auth.entity.TenantAccountGeneralEntity;
 import com.example.storeweb.domain.auth.entity.TenantEntity;
+import com.example.storeweb.domain.auth.repo.RoleRepository;
+import com.example.storeweb.domain.auth.repo.TenantAccountGeneralRepository;
 import com.example.storeweb.domain.auth.repo.TenantRepository;
 import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.utils.JwtUtil;
@@ -22,6 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService implements AuthServiceImpl{
     private final TenantRepository tenantRepository;
+    private final RoleRepository roleRepository;
+    private final TenantAccountGeneralRepository tenantAccountGeneralRepository;
     private final JwtUtil jwtUtil;
 
     @Transactional
@@ -89,5 +95,30 @@ public class AuthService implements AuthServiceImpl{
 //        System.out.println(tenant.toString());
 
 
+    }
+
+
+    /**
+     * <p>
+     *     비활성 사용자로 가입 <br />
+     *     회원가입 요청마다 현재 DB에 있는 ROLE 체크 후 비활성 사용자 ROLE 부여
+     * </p>
+     *
+     * */
+    @Transactional
+    public boolean createPreActiveTenant(TenantDto.JoinRequestDto dto){
+        RoleEntity role = roleRepository.findRoleEntityByValue("ROLE_TENANT_PREACTIVE");
+
+        TenantEntity tenant = TenantEntity.builder()
+                .account(dto.getAccount())
+                .role(role)
+                .password(dto.getPassword())
+                        .build();
+
+
+        tenantRepository.save(tenant);
+
+
+        return true;
     }
 }

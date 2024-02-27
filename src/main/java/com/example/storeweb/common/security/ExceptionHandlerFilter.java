@@ -43,7 +43,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                         .status(status.value())
                         .error(errorCode)
                         .message(ex.getMessage())
-                        .path(request.getServletPath())
                         .timestamp(LocalDateTime.now().toString())
                         .build()
                         .convertToJson()

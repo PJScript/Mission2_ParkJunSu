@@ -7,3 +7,4 @@ public class LoginRequestDto {
     String account;
     String password;
 }
+

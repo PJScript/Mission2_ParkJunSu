@@ -21,7 +21,7 @@ public class BaseResponseDto<D> {
     private final int status;
     private final String message;
     private final D data;
-    private final String path;
+//    private final String path;
     private final String error;
     private final String timestamp;
 
