@@ -62,6 +62,8 @@ public class TenantDto {
                     .subMunicipalLevelDivision(Optional.ofNullable(entity.getSubMunicipalLevelDivision()).orElse(""))
                     .build();
         }
+
+
         public static TenantEntity dtoToEntity(UserInfoDto dto, TenantEntity tenant){
             return TenantEntity.builder()
                     .id(tenant.getId())

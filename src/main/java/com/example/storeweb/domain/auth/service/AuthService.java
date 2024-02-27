@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -102,8 +103,9 @@ public class AuthService implements AuthServiceImpl {
 
 
     /**
+     *
+     * <p>비활성 사용자로 가입 </p>
      * <p>
-     * 비활성 사용자로 가입 <br />
      * 회원가입 요청마다 현재 DB에 있는 ROLE 체크 후 비활성 사용자 ROLE 부여
      * </p>
      */
@@ -125,12 +127,12 @@ public class AuthService implements AuthServiceImpl {
     }
 
     /**
-     * 유저 정보 수정 메서드 <br />
-     * 현재 사용자가 비활성인지, 활성인지 확인 후 조건 충족하면 권한 필드도 변경해줘야함
+     * 유저 정보 수정 메서드
+     * <p>현재 사용자가 비활성인지, 활성인지 확인 후 조건 충족하면 권한 필드도 변경해줘야합니다.
+     *</p>
      */
-
     @Transactional
-    public TenantDto.UserInfoDto modifyTenant(TenantDto.UserInfoDto dto) {
+    public TenantEntity modifyTenant(TenantDto.UserInfoDto dto) {
         UserDetails userDetails = SecurityUtil.getCurrentUserDetails();
 
         log.info(userDetails.getUsername() + " : 유저네임");
@@ -145,10 +147,41 @@ public class AuthService implements AuthServiceImpl {
 
         log.info(tenant.getId() + " : ID");
         TenantEntity updateTenant = TenantDto.UserInfoDto.dtoToEntity(dto,tenant);
-        tenantRepository.save(updateTenant);
+        updateRole(updateTenant);
 
-
-        return TenantDto.UserInfoDto.entityToDto(updateTenant);
+        return tenantRepository.save(updateTenant);
 
     }
+
+    /**
+     * <p>
+     *     Entity를 직접 받아 값을 확인 후 권한을 변경해주는 메서드 입니다. <br />
+     * </p>
+     * */
+    public void updateRole(TenantEntity tenant){
+        log.info(tenant.getName() + " : 이름");
+        log.info(tenant.getNickname() + " : 닉네임");
+        log.info(tenant.getAge() + " : 연령대");
+        log.info(tenant.getEmail() + " : 이메일");
+        log.info(tenant.getPhone1() + " : 휴대폰");
+        RoleEntity updatedRoleTenant;
+        // 활성 사용자로 변경하기 위한 모든 값이 존재한다면 활성사용자로 변경
+        //닉네임, 이름, 연령대, 이메일, 전화번호
+        if (
+                !tenant.getNickname().isEmpty() ||
+                        !tenant.getName().isEmpty() ||
+                        !tenant.getAge().isEmpty() ||
+                        !tenant.getEmail().isEmpty() ||
+                        !tenant.getPhone1().isEmpty()
+        ) {
+            RoleEntity activeRole = roleRepository.findRoleEntityByValue("ROLE_TENANT_ACTIVE");
+            log.info(activeRole.getValue() + " : 권한명");
+            tenant.updateRole(activeRole);
+
+        };
+
+
+
+
+    };
 }

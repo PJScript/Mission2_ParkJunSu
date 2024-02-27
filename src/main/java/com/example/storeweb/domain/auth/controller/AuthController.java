@@ -2,6 +2,7 @@ package com.example.storeweb.domain.auth.controller;
 
 import com.example.storeweb.domain.auth.dto.LoginRequestDto;
 import com.example.storeweb.domain.auth.dto.TenantDto;
+import com.example.storeweb.domain.auth.entity.TenantEntity;
 import com.example.storeweb.domain.auth.service.AuthService;
 import com.example.storeweb.common.dto.BaseResponseDto;
 import com.example.storeweb.exception.CustomException;
@@ -10,6 +11,7 @@ import com.example.storeweb.utils.TimeUtil;
 
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -124,11 +126,15 @@ public class AuthController {
             @RequestBody
             TenantDto.UserInfoDto dto
     ) {
-        TenantDto.UserInfoDto updatedUser = authService.modifyTenant(dto);
+        // 닉네임,이름, 연령대, 전화번호 모두 있다면 권한 설정 변경
+
+
+        TenantEntity entity = authService.modifyTenant(dto);
+
         return BaseResponseDto.<TenantDto.UserInfoDto>builder()
                 .status(200)
                 .message("수정 완료")
-                .data(updatedUser)
+                .data(TenantDto.UserInfoDto.entityToDto(entity))
                 .error(null)
                 .timestamp(timeUtil.getCurrentTimeString())
                 .build();
