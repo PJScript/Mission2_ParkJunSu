@@ -51,6 +51,7 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
             userAuthorities.forEach(auth -> log.info("User Authority: {}", auth.getAuthority()));
             activities.forEach(activity -> log.info("Required Authority: {}", activity.getRole().getValue()));
 
+            log.info("Dynamic Filter 테스트");
             if (!isAuthorized) {
                 log.info("접근 거부");
                 response.sendError(HttpStatus.FORBIDDEN.value(), "Access Denied");

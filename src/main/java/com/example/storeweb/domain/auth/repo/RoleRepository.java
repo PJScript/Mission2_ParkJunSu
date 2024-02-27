@@ -9,4 +9,6 @@ import java.util.List;
 public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
     @Cacheable(value = "roles",key = "'roles'")
     List<RoleEntity> findAll();
+
+    RoleEntity findRoleEntityByValue(String value);
 }

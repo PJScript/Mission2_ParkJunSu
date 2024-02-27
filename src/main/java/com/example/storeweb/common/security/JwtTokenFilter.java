@@ -47,14 +47,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // 검증이 필요 없는 엔드포인트를 기록
         List<String> list = List.of(
-                "/v1/auth/login"
+                "/v1/auth/join",
+                "/v1/auth/login",
+                "/v1/auth/test"
         );
 
+        log.info("필터 테스트");
         // 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.
         if (list.contains(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        log.info("JWT 필터 미검증 엔드포인트 넘어갔는지 확인");
+
 
         // Authorization 헤더가 없다면 Exception 발생
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);

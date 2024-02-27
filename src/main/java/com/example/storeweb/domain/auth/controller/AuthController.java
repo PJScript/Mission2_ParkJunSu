@@ -1,9 +1,16 @@
 package com.example.storeweb.domain.auth.controller;
 
+import com.example.storeweb.common.entity.BaseEntity;
 import com.example.storeweb.domain.auth.dto.LoginRequestDto;
+import com.example.storeweb.domain.auth.dto.TenantDto;
 import com.example.storeweb.domain.auth.dto.UserInfoDto;
 import com.example.storeweb.domain.auth.service.AuthService;
 import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.exception.CustomException;
+import com.example.storeweb.exception.GlobalException;
+import com.example.storeweb.utils.JwtUtil;
+import com.example.storeweb.utils.TimeUtil;
+
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/auth")
-public class TenantController {
+public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/test")
@@ -44,17 +51,12 @@ public class TenantController {
     ) {
         log.info("account:" + dto.getAccount());
         log.info("password: " + dto.getPassword());
-
-
         return BaseResponseDto.<TokenInfoDto>builder()
                 .status(200)
                 .message("Login Success")
-                .path(req.getServletPath())
                 .data(authService.login(dto, req))
                 .timestamp(LocalDateTime.now().toString())
                 .build();
-
-
     }
 
     /**
@@ -72,14 +74,9 @@ public class TenantController {
             HttpServletRequest req
     ) {
         log.info("HEADER: " + jwt);
-
-        // TODO: JWT로 받아온 값을 해석하여 유저 고유값인 uuid와 대조한 후 정보 전달
-
-
         return BaseResponseDto.<UserInfoDto>builder()
                 .status(200)
                 .message("Login Success")
-                .path("/user")
                 .data(authService.getUserInfo(jwt, req))
                 .timestamp(LocalDateTime.now().toString())
                 .build();
@@ -91,13 +88,35 @@ public class TenantController {
      * 서비스를 이용하려면 닉네임,이름,연령대,이메일,전화번 정보를 추가해야합니다.</p>
      */
     @PostMapping("/join")
-    public void join(
+    public BaseResponseDto<Object> join(
             @RequestBody
-            String account,
-            String password
+            TenantDto.JoinRequestDto dto
     ) {
-        log.debug("account" + account);
-        log.debug("password" + password);
+
+        log.info(dto.getAccount() + " : account ----------");
+        final TimeUtil timeUtil = new TimeUtil();
+        if (dto.getAccount().isEmpty() || dto.getPassword().isEmpty()) {
+            throw new CustomException(GlobalException.BAD_REQUEST);
+        }
+
+        // TODO: 아이디 조건 정규식으로 검증
+        // TODO: 비밀번호 조건 정규식으로 검증
+        // TODO: 비밀번호 암호화 후 저회
+        log.debug("account" + dto.getAccount());
+        log.debug("password" + dto.getPassword());
+        if (authService.createPreActiveTenant(dto)) {
+            return BaseResponseDto.builder()
+                    .status(200)
+                    .message("회원가입 성공")
+                    .data(dto.getAccount())
+                    .error(null)
+                    .timestamp(timeUtil.getCurrentTimeString())
+                    .build();
+        }else{
+            throw new CustomException(GlobalException.BAD_REQUEST);
+
+        }
+
         // TODO: 회원가입시 보내온 password를 암호화 하여 DB에 저장하고 이때 uuid 생성하여 uuid 필드에 같이 저장
     }
 

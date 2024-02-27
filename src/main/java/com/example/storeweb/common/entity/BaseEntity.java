@@ -2,6 +2,7 @@ package com.example.storeweb.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,6 +17,7 @@ public abstract class BaseEntity {
 
     /**행이 삭제 되었는지 여부를 논리적으로 처리*/
     @Column(name = "is_delete", nullable = false)
+    @ColumnDefault("false")
     private boolean isDelete;
 
     /**행 생성시간*/
