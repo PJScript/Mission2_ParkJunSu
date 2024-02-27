@@ -16,4 +16,5 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
 
 
 
+
 }

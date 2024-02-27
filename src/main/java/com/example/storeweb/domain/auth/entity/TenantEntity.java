@@ -82,6 +82,10 @@ public class TenantEntity extends BaseEntity {
     @Column(name = "sub_municipla_level_division")
     private String subMunicipalLevelDivision;
 
+    public void updateRole (RoleEntity role) {
+        this.role = role;
+    }
+
 
 
 }
