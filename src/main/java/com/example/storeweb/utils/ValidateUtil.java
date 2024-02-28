@@ -3,8 +3,10 @@ package com.example.storeweb.utils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Validate {
-
+public class ValidateUtil {
+    private static final String ACCOUNT_PATTERN = "^[a-zA-Z0-9]{5,20}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%])(?=\\S+$).{8,}$";
+    private static final String BUSINESS_NUMBER_PATTERN = "";
     /**
      * <p>계정정보 유효성 검사</p>
      * <p>5글자 이상 20글자 이하이며 특수문자를 허용하지 않음</p>
@@ -12,8 +14,7 @@ public class Validate {
      * @return 검증 결과 true / false
      * */
     public boolean accountValidation(String account) {
-
-        return true;
+        return account.matches(ACCOUNT_PATTERN);
     }
 
     /**
@@ -26,7 +27,7 @@ public class Validate {
      * </p>
      * */
     public boolean passwordValidation(String password){
-        return true;
+        return password.matches(PASSWORD_PATTERN);
     }
 
     /**
@@ -37,8 +38,7 @@ public class Validate {
      * @return 검증 결과 true / false
      * */
     public boolean passwordCheckValidation(String password, String passwordCheck){
-
-        return true;
+        return password.equals(passwordCheck);
     }
 
 
