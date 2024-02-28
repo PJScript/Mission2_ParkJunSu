@@ -13,6 +13,8 @@ public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
     @Cacheable(value = "uuid", key = "#uuid")
     Optional<TenantEntity> findByUuid(String uuid);
 
+    Optional<TenantEntity> findByAccount(String account);
+
 
 
 

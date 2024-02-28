@@ -184,4 +184,8 @@ public class AuthService implements AuthServiceImpl {
 
 
     };
+
+    public boolean duplicateCheck(String account){
+        return tenantRepository.findByAccount(account).isPresent();
+    }
 }
