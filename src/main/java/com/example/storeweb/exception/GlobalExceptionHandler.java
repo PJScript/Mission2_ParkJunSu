@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         BaseResponseDto<Object> response = BaseResponseDto.builder()
                 .status(globalException.getStatus())
                 .message(globalException.getMessage())
-                .data(null)
+                .data(globalException.getData())
                 .timestamp(LocalDateTime.now().toString()
                 ).build();
 

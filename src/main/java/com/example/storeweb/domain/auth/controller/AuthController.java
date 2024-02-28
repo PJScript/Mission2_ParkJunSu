@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -95,24 +96,23 @@ public class AuthController {
             TenantDto.JoinRequestDto dto
     ) {
 
-        log.info(dto.getAccount() + " : account ----------");
         final TimeUtil timeUtil = new TimeUtil();
-        if (dto.getAccount().isEmpty() || dto.getPassword().isEmpty()) {
+        if (dto.getAccount().isEmpty() || dto.getPassword().isEmpty())
             throw new CustomException(GlobalException.BAD_REQUEST);
-        }
 
-        if (
-                validateUtil.accountValidation(dto.getAccount()) ||
-                        validateUtil.passwordValidation(dto.getPassword()) ||
-                        validateUtil.passwordCheckValidation(dto.getPassword(), dto.getPassword()
-                        )
 
-        ) {
-            throw new CustomException(GlobalException.BAD_REQUEST);
-        }
+        if (!validateUtil.accountValidation(dto.getAccount())
+                || !validateUtil.passwordValidation(dto.getPassword())
+                || !validateUtil.passwordCheckValidation(dto.getPassword(), dto.getPassword())
 
-        // TODO: 아이디 조건 정규식으로 검증
-        // TODO: 비밀번호 조건 정규식으로 검증
+        ) throw new CustomException(
+                GlobalException.BAD_REQUEST
+        );
+
+        if(authService.duplicateCheck(dto.getAccount()))
+            throw new CustomException(GlobalException.DUPLICATE_ACCOUNT);
+
+
         // TODO: 비밀번호 암호화 후 저회
         log.debug("account" + dto.getAccount());
         log.debug("password" + dto.getPassword());
@@ -152,5 +152,25 @@ public class AuthController {
                 .build();
     }
 
+
+    @GetMapping("/user/account/{account}")
+    public BaseResponseDto<Object> isDuplicate(
+            @PathVariable
+            String account
+    ) {
+        boolean isDuplicate = authService.duplicateCheck(account);
+        TenantDto.IsDuplcateAccountDto isDuplicateDto =
+                TenantDto.IsDuplcateAccountDto.builder()
+                        .isDuplicate(isDuplicate).build();
+
+        String message = isDuplicate ? "사용 불가능한 아이디 입니다." : "사용 가능한 아이디 입니다.";
+
+        return BaseResponseDto.builder()
+                .status(200)
+                .data(isDuplicateDto)
+                .message(message)
+                .timestamp(timeUtil.getCurrentTimeString())
+                .build();
+    }
 
 }

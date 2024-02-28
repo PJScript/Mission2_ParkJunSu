@@ -93,4 +93,12 @@ public class TenantDto {
 
 
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class IsDuplcateAccountDto{
+        boolean isDuplicate;
+    }
 }

@@ -27,6 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -46,15 +47,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         // 검증이 필요 없는 엔드포인트를 기록
-        List<String> list = List.of(
-                "/v1/auth/join",
-                "/v1/auth/login",
-                "/v1/auth/test"
+        List<Pattern> patterns = List.of(
+                Pattern.compile("^/v1/auth/join$"),
+                Pattern.compile("^/v1/auth/login$"),
+                Pattern.compile("^/v1/auth/test$"),
+                Pattern.compile("^/v1/auth/user/account/.*$")
         );
 
+        String requestUri = request.getRequestURI();
+        boolean isMatch = patterns.stream()
+                .anyMatch(pattern -> pattern.matcher(requestUri).matches());
         log.info("필터 테스트");
         // 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.
-        if (list.contains(request.getRequestURI())) {
+        if (isMatch) {
             filterChain.doFilter(request, response);
             return;
         }
