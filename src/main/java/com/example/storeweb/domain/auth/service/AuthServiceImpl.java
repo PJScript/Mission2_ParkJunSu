@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface AuthServiceImpl {
 
   TokenInfoDto login(LoginRequestDto dto, HttpServletRequest req);
-  TenantDto.UserInfoDto getUserInfo(String jwt, HttpServletRequest req);
+  TenantEntity getUserInfo(String jwt);
   boolean createPreActiveTenant(TenantDto.JoinRequestDto dto);
   TenantEntity modifyTenant(TenantDto.UserInfoDto dto);
 

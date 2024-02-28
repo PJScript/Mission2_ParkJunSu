@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public UserDetails loadUserByTenantUuid(String uuid) throws UsernameNotFoundException {
         log.info("UUID-1 : " + uuid);
-        TenantEntity tenant = tenantRepository.findByUuid(uuid)
+        TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid)
                 .orElseThrow(() -> new UsernameNotFoundException("Tenant not found with id: " + uuid));
 
 

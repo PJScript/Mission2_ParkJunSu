@@ -1,17 +1,17 @@
 package com.example.storeweb.exception;
 
 
-import io.jsonwebtoken.JwtException;
+import com.example.storeweb.common.GlobalSystemStatus;
 import lombok.Getter;
 
 
 @Getter
 public class CustomException extends RuntimeException {
 
-    private final GlobalException globalException;
+    private final GlobalSystemStatus globalException;
 
-    public CustomException(GlobalException globalException) {
-        super(globalException.getMessage());
+    public CustomException(GlobalSystemStatus globalException) {
+        super(globalException.getSystemMessage());
         this.globalException = globalException;
     }
 

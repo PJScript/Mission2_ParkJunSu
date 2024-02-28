@@ -1,24 +1,26 @@
 package com.example.storeweb.domain.auth.controller;
 
+
+import com.example.storeweb.domain.auth.dto.AccountDuplicateResponse;
 import com.example.storeweb.domain.auth.dto.LoginRequestDto;
 import com.example.storeweb.domain.auth.dto.TenantDto;
 import com.example.storeweb.domain.auth.entity.TenantEntity;
 import com.example.storeweb.domain.auth.service.AuthService;
-import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.common.dto.BaseResponse;
 import com.example.storeweb.exception.CustomException;
-import com.example.storeweb.exception.GlobalException;
+import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.utils.TimeUtil;
 
 import com.example.storeweb.utils.ValidateUtil;
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import static org.springframework.http.HttpStatus.*;
 
 
 /**
@@ -47,19 +49,12 @@ public class AuthController {
      * 로그인 엔드포인트
      */
     @PostMapping("/login")
-    public BaseResponseDto<TokenInfoDto> login(
-            @RequestBody
-            LoginRequestDto dto,
-            HttpServletRequest req
-    ) {
+    public ResponseEntity<TokenInfoDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest req) {
         log.info("account:" + dto.getAccount());
         log.info("password: " + dto.getPassword());
-        return BaseResponseDto.<TokenInfoDto>builder()
-                .status(200)
-                .message("Login Success")
-                .data(authService.login(dto, req))
-                .timestamp(LocalDateTime.now().toString())
-                .build();
+        return ResponseEntity.status(OK).body(
+                authService.login(dto, req)
+        );
     }
 
     /**
@@ -71,18 +66,12 @@ public class AuthController {
      * </p>
      */
     @GetMapping("/user")
-    public BaseResponseDto<TenantDto.UserInfoDto> getUser(
-            @RequestHeader("Authorization")
-            String jwt,
-            HttpServletRequest req
-    ) {
+    public ResponseEntity<TenantDto.UserInfoDto> getUser(@RequestHeader("Authorization") String jwt, HttpServletRequest req) {
         log.info("HEADER: " + jwt);
-        return BaseResponseDto.<TenantDto.UserInfoDto>builder()
-                .status(200)
-                .message("Login Success")
-                .data(authService.getUserInfo(jwt, req))
-                .timestamp(LocalDateTime.now().toString())
-                .build();
+        return ResponseEntity.status(OK).body(
+                TenantDto.UserInfoDto.entityToDto(authService.getUserInfo(jwt))
+        );
+
     }
 
     /**
@@ -91,88 +80,51 @@ public class AuthController {
      * 서비스를 이용하려면 닉네임,이름,연령대,이메일,전화번 정보를 추가해야합니다.</p>
      */
     @PostMapping("/join")
-    public BaseResponseDto<String> join(
-            @RequestBody
-            TenantDto.JoinRequestDto dto
-    ) {
+    public ResponseEntity<Object> join(@RequestBody TenantDto.JoinRequestDto dto) {
 
-        final TimeUtil timeUtil = new TimeUtil();
         if (dto.getAccount().isEmpty() || dto.getPassword().isEmpty())
-            throw new CustomException(GlobalException.BAD_REQUEST);
+            throw new CustomException(GlobalSystemStatus.BAD_REQUEST);
 
 
-        if (!validateUtil.accountValidation(dto.getAccount())
-                || !validateUtil.passwordValidation(dto.getPassword())
-                || !validateUtil.passwordCheckValidation(dto.getPassword(), dto.getPassword())
+        if (!validateUtil.accountValidation(dto.getAccount()) || !validateUtil.passwordValidation(dto.getPassword()) || !validateUtil.passwordCheckValidation(dto.getPassword(), dto.getPassword())
 
-        ) throw new CustomException(
-                GlobalException.BAD_REQUEST
-        );
+        ) throw new CustomException(GlobalSystemStatus.BAD_REQUEST);
 
-        if(authService.duplicateCheck(dto.getAccount()))
-            throw new CustomException(GlobalException.DUPLICATE_ACCOUNT);
+        if (authService.duplicateCheck(dto.getAccount())) throw new CustomException(GlobalSystemStatus.DUPLICATE_ACCOUNT);
 
+        authService.createPreActiveTenant(dto);
 
-
-       
         // TODO: 비밀번호 암호화 후 저회
         log.debug("account" + dto.getAccount());
         log.debug("password" + dto.getPassword());
-        if (authService.createPreActiveTenant(dto)) {
-            return BaseResponseDto.<String>builder()
-                    .status(200)
-                    .message("회원가입 성공")
-                    .data(dto.getAccount())
-                    .error(null)
-                    .timestamp(timeUtil.getCurrentTimeString())
-                    .build();
-        } else {
-            throw new CustomException(GlobalException.BAD_REQUEST);
 
-        }
+        return ResponseEntity.status(CREATED)
+                .body(BaseResponse.builder().systemMessage("회원가입 성공").build());
 
         // TODO: 회원가입시 보내온 password를 암호화 하여 DB에 저장하고 이때 uuid 생성하여 uuid 필드에 같이 저장
     }
 
 
     @PutMapping("/user")
-    public BaseResponseDto<TenantDto.UserInfoDto> modifyTenant(
-            @RequestBody
-            TenantDto.UserInfoDto dto
-    ) {
+    public ResponseEntity<TenantDto.UserInfoDto> modifyTenant(@RequestBody TenantDto.UserInfoDto dto) {
         // 닉네임,이름, 연령대, 전화번호 모두 있다면 권한 설정 변경
-
-
         TenantEntity entity = authService.modifyTenant(dto);
 
-        return BaseResponseDto.<TenantDto.UserInfoDto>builder()
-                .status(200)
-                .message("수정 완료")
-                .data(TenantDto.UserInfoDto.entityToDto(entity))
-                .error(null)
-                .timestamp(timeUtil.getCurrentTimeString())
-                .build();
+        return ResponseEntity.status(OK).body(
+                TenantDto.UserInfoDto.entityToDto(entity)
+        );
     }
 
 
     @GetMapping("/user/account/{account}")
-    public BaseResponseDto<Object> isDuplicate(
-            @PathVariable
-            String account
-    ) {
+    public ResponseEntity<AccountDuplicateResponse> isDuplicate(@PathVariable String account) {
         boolean isDuplicate = authService.duplicateCheck(account);
-        TenantDto.IsDuplcateAccountDto isDuplicateDto =
-                TenantDto.IsDuplcateAccountDto.builder()
-                        .isDuplicate(isDuplicate).build();
+        return ResponseEntity.status(CONFLICT).body(
+                AccountDuplicateResponse.builder()
+                        .isDuplicate(isDuplicate)
+                        .build()
 
-        String message = isDuplicate ? "사용 불가능한 아이디 입니다." : "사용 가능한 아이디 입니다.";
-
-        return BaseResponseDto.builder()
-                .status(200)
-                .data(isDuplicateDto)
-                .message(message)
-                .timestamp(timeUtil.getCurrentTimeString())
-                .build();
+        );
     }
 
 }
