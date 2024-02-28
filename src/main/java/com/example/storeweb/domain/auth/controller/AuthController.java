@@ -113,6 +113,8 @@ public class AuthController {
             throw new CustomException(GlobalException.DUPLICATE_ACCOUNT);
 
 
+
+       
         // TODO: 비밀번호 암호화 후 저회
         log.debug("account" + dto.getAccount());
         log.debug("password" + dto.getPassword());
