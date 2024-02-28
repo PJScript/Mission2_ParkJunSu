@@ -1,6 +1,6 @@
 package com.example.storeweb.common.security;
 
-import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.common.dto.BaseResponse;
 import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.CustomJwtException;
 import io.jsonwebtoken.JwtException;
@@ -38,14 +38,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         }
         response.setContentType("application/json; charset=UTF-8");
 
+
         response.getWriter().write(
-                BaseResponseDto.builder()
-                        .status(status.value())
-                        .error(errorCode)
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now().toString())
-                        .build()
-                        .convertToJson()
+                BaseResponse.builder()
+                        .systemMessage(ex.getMessage())
+                        .build().toString()
         );
     }
 }

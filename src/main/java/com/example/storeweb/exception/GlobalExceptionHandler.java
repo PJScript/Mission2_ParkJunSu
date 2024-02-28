@@ -1,30 +1,25 @@
 package com.example.storeweb.exception;
 
-import com.example.storeweb.common.dto.BaseResponseDto;
+import com.example.storeweb.common.GlobalSystemStatus;
+import com.example.storeweb.common.dto.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BaseResponseDto<Object>> handleCustomException(CustomException ex, HttpServletRequest req) {
-        GlobalException globalException = ex.getGlobalException();
+    public ResponseEntity<BaseResponse> handleCustomException(CustomException ex, HttpServletRequest req) {
+        GlobalSystemStatus globalException = ex.getGlobalException();
 
-        BaseResponseDto<Object> response = BaseResponseDto.builder()
-                .status(globalException.getStatus())
-                .message(globalException.getMessage())
-                .data(globalException.getData())
-                .timestamp(LocalDateTime.now().toString()
-                ).build();
+        BaseResponse response = BaseResponse.builder()
+                .systemMessage(globalException.getSystemMessage())
+                .systemCode(globalException.getSystemCode())
+                .build();
 
-        return new ResponseEntity<>(response, HttpStatus.valueOf(globalException.getStatus()));
+        return  ResponseEntity.status(globalException.getStatus()).body(response);
     }
 }

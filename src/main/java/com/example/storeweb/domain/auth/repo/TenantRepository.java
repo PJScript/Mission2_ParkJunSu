@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
-    TenantEntity findTenantEntityByAccount(String account);
+    Optional<TenantEntity> findTenantEntityByAccount(String account);
 
     @Cacheable(value = "uuid", key = "#uuid")
-    Optional<TenantEntity> findByUuid(String uuid);
+    Optional<TenantEntity> findTenantEntityByUuid(String uuid);
 
     Optional<TenantEntity> findByAccount(String account);
 

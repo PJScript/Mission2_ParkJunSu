@@ -25,7 +25,6 @@ public class TenantDto {
     }
 
     @Getter
-    @Setter
     @AllArgsConstructor
     @Builder
     public static class UserInfoDto {
