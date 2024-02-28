@@ -9,6 +9,7 @@ import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.GlobalException;
 import com.example.storeweb.utils.TimeUtil;
 
+import com.example.storeweb.utils.ValidateUtil;
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -33,6 +34,7 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final AuthService authService;
     private final TimeUtil timeUtil;
+    private final ValidateUtil validateUtil;
 
     @GetMapping("/test")
     public String test() {
@@ -96,6 +98,16 @@ public class AuthController {
         log.info(dto.getAccount() + " : account ----------");
         final TimeUtil timeUtil = new TimeUtil();
         if (dto.getAccount().isEmpty() || dto.getPassword().isEmpty()) {
+            throw new CustomException(GlobalException.BAD_REQUEST);
+        }
+
+        if (
+                validateUtil.accountValidation(dto.getAccount()) ||
+                        validateUtil.passwordValidation(dto.getPassword()) ||
+                        validateUtil.passwordCheckValidation(dto.getPassword(), dto.getPassword()
+                        )
+
+        ) {
             throw new CustomException(GlobalException.BAD_REQUEST);
         }
 
