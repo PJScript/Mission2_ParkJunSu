@@ -14,7 +14,12 @@ import lombok.*;
 @Setter
 @Builder
 public class BaseResponse {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private String systemCode;
     private String systemMessage;
+
+    public String convertToJson() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(this);
+    }
 }
 

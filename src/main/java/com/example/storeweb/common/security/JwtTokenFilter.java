@@ -2,6 +2,7 @@ package com.example.storeweb.common.security;
 
 
 import com.example.storeweb.domain.auth.service.CustomUserDetailsService;
+import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.CustomJwtException;
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.utils.JwtUtil;
@@ -66,11 +67,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Authorization 헤더가 없다면 Exception 발생
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
+            log.info("토큰이 없음");
            throw new CustomJwtException(GlobalSystemStatus.TOKEN_NOT_FOUND);
         }
 
         // Authorization 헤더가 올바르지 않으면 Exception 발생
         if(!authHeader.startsWith("Bearer ")){
+            log.info("토큰 앞부분이 올바르지 않음");
             throw new CustomJwtException(GlobalSystemStatus.TOKEN_NOT_FOUND);
         }
 

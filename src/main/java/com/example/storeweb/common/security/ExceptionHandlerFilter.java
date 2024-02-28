@@ -41,8 +41,9 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         response.getWriter().write(
                 BaseResponse.builder()
+                        .systemCode(errorCode)
                         .systemMessage(ex.getMessage())
-                        .build().toString()
+                        .build().convertToJson()
         );
     }
 }

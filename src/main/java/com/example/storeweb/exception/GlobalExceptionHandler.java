@@ -20,6 +20,11 @@ public class GlobalExceptionHandler {
                 .systemCode(globalException.getSystemCode())
                 .build();
 
-        return  ResponseEntity.status(globalException.getStatus()).body(response);
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.OK
+        );
+
+
     }
 }
