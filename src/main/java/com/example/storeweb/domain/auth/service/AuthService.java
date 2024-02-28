@@ -38,12 +38,16 @@ public class AuthService implements AuthServiceImpl {
         String account = dto.getAccount();
         String password = dto.getPassword();
 
+
         TenantEntity tenant = tenantRepository.findTenantEntityByAccount(account)
                 .orElseThrow(() -> new CustomException(GlobalSystemStatus.BAD_REQUEST));
 
+        log.info("에러발생 여부");
         if (!password.equals(tenant.getPassword())) {
-            return null;
+            throw new CustomException(GlobalSystemStatus.PASSWORD_OR_ACCOUNT_NOT_FOUND);
         }
+
+
 
         TenantDto info = new TenantDto(tenant.getUuid());
         TokenInfoDto tokenInfo = jwtUtil.createAccessToken(info);

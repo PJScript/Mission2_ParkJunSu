@@ -17,7 +17,8 @@ public enum GlobalSystemStatus {
 
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"A0001","인자를 올바르게 입력 해주세요"),
     BAD_REQUEST_ID(HttpStatus.BAD_REQUEST,"A0002","아이디를 올바르게 입력 해주세요"),
-    DUPLICATE_ACCOUNT(HttpStatus.BAD_REQUEST,"A0003","존재하는 아이디 입니다.");
+    DUPLICATE_ACCOUNT(HttpStatus.BAD_REQUEST,"A0003","존재하는 아이디 입니다."),
+    PASSWORD_OR_ACCOUNT_NOT_FOUND(HttpStatus.BAD_REQUEST,"A0004","아이디 혹은 비밀번호가 올바르지 않습니다.");
 
 
 
