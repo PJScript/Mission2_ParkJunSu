@@ -6,6 +6,7 @@ import com.example.storeweb.domain.auth.entity.TenantEntity;
 import com.example.storeweb.domain.auth.repo.ActivityRepository;
 import com.example.storeweb.domain.auth.repo.RoleRepository;
 import com.example.storeweb.domain.auth.repo.TenantRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,28 +34,32 @@ public class CustomUserDetailsService implements UserDetailsService {
     private TenantRepository tenantRepository;
     private RoleRepository roleRepository;
 
-
+    @Transactional
     public UserDetails loadUserByTenantUuid(String uuid) throws UsernameNotFoundException {
-        log.info("UUID-1 : " + uuid);
         TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid)
-                .orElseThrow(() -> new UsernameNotFoundException("Tenant not found with id: " + uuid));
+                .orElseThrow(() -> new UsernameNotFoundException("Tenant not found with uuid: " + uuid));
 
+        // 특정 사용자의 역할을 조회합니다.
+        RoleEntity role = tenant.getRole();
 
-        log.info("UUID-2 : " + uuid);
-        List<String> roles = roleRepository.findAll().stream().map(RoleEntity::getValue).toList();
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getValue()));
 
-
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
-        return new User(
-                tenant.getUuid(), Optional.ofNullable(tenant.getEmail()).orElse(""), authorities);
-
+        return new User(tenant.getUuid(), tenant.getPassword(), authorities);
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        TenantEntity tenant = tenantRepository.findByAccount(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with account: " + username));
+
+        // 특정 사용자의 역할을 조회합니다.
+        RoleEntity role = tenant.getRole();
+
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getValue()));
+
+        return new User(tenant.getAccount(), tenant.getPassword(), authorities);
     }
+
+
 }

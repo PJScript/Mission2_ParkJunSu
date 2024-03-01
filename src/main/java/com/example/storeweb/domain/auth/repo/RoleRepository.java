@@ -11,4 +11,5 @@ public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
     List<RoleEntity> findAll();
 
     RoleEntity findRoleEntityByValue(String value);
+
 }
