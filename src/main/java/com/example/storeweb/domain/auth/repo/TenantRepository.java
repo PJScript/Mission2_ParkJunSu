@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TenantRepository extends JpaRepository<TenantEntity, Long> {
     Optional<TenantEntity> findTenantEntityByAccount(String account);
 
-    @Cacheable(value = "uuid", key = "#uuid")
+    @Cacheable(value = "tenant-by-uuid", key = "#uuid")
     Optional<TenantEntity> findTenantEntityByUuid(String uuid);
 
     Optional<TenantEntity> findByAccount(String account);
