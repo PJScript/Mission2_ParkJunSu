@@ -22,6 +22,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -89,6 +91,7 @@ public class AuthService implements AuthServiceImpl {
 
         TenantEntity tenant = TenantEntity.builder()
                 .account(dto.getAccount())
+                .uuid(UUID.randomUUID().toString())
                 .role(role)
                 .password(passwordEncoderUtil.passwordEncoder().encode(dto.getPassword()) )
                 .build();

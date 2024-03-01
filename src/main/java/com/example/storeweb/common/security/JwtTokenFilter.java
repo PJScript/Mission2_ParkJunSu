@@ -46,13 +46,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         permitAllPatterns = NoFilterUrlPattern.PERMIT_ALL_URL_PATTERNS.stream()
                 .map(Pattern::compile)
                 .collect(Collectors.toList());
-        // 검증이 필요 없는 엔드포인트를 기록
-        List<Pattern> patterns = List.of(
-                Pattern.compile("^/v1/auth/join$"),
-                Pattern.compile("^/v1/auth/login$"),
-                Pattern.compile("^/v1/auth/test$"),
-                Pattern.compile("^/v1/auth/user/account/.*$")
-        );
+
 
         String requestUri = request.getRequestURI();
         boolean isPermitAll = permitAllPatterns.stream()
