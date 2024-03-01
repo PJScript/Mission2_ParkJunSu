@@ -1,8 +1,6 @@
 package com.example.storeweb.common.security;
 
 
-import com.example.storeweb.domain.auth.service.CustomUserDetailsService;
-import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.exception.CustomJwtException;
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.utils.JwtUtil;
@@ -25,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -33,6 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtUtil JwtUtil;
     // 사용자 정보를 찾기위한 UserDetailsService 또는 Manager
     private final CustomUserDetailsService customUserDetailsService;
+    private List<Pattern> permitAllPatterns;
 
 
 
@@ -43,6 +43,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        permitAllPatterns = NoFilterUrlPattern.PERMIT_ALL_URL_PATTERNS.stream()
+                .map(Pattern::compile)
+                .collect(Collectors.toList());
         // 검증이 필요 없는 엔드포인트를 기록
         List<Pattern> patterns = List.of(
                 Pattern.compile("^/v1/auth/join$"),
@@ -52,11 +55,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         );
 
         String requestUri = request.getRequestURI();
-        boolean isMatch = patterns.stream()
+        boolean isPermitAll = permitAllPatterns.stream()
                 .anyMatch(pattern -> pattern.matcher(requestUri).matches());
-        log.info("필터 테스트");
-        // 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.
-        if (isMatch) {
+
+        if (isPermitAll) {
             filterChain.doFilter(request, response);
             return;
         }

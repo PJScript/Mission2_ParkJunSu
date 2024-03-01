@@ -10,6 +10,7 @@ import com.example.storeweb.domain.auth.repo.TenantRepository;
 import com.example.storeweb.exception.CustomException;
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.utils.JwtUtil;
+import com.example.storeweb.utils.PasswordEncoderUtil;
 import com.example.storeweb.utils.SecurityUtil;
 import com.example.storeweb.utils.dto.TokenInfoDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,10 +28,8 @@ import org.springframework.stereotype.Service;
 public class AuthService implements AuthServiceImpl {
     private final TenantRepository tenantRepository;
     private final RoleRepository roleRepository;
-    private final TenantAccountGeneralRepository tenantAccountGeneralRepository;
     private final JwtUtil jwtUtil;
-    private final SecurityUtil securityUtil;
-
+    private final PasswordEncoderUtil passwordEncoderUtil;
 
     public TokenInfoDto login(
             LoginRequestDto dto,
@@ -73,10 +73,7 @@ public class AuthService implements AuthServiceImpl {
             tokenUuid = jwtUtil.getUserUuId(token);
         }
 
-
         return tenantRepository.findTenantEntityByUuid(tokenUuid).orElseThrow();
-
-
     }
 
 
@@ -93,7 +90,7 @@ public class AuthService implements AuthServiceImpl {
         TenantEntity tenant = TenantEntity.builder()
                 .account(dto.getAccount())
                 .role(role)
-                .password(dto.getPassword())
+                .password(passwordEncoderUtil.passwordEncoder().encode(dto.getPassword()) )
                 .build();
 
 
