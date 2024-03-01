@@ -1,4 +1,4 @@
-package com.example.storeweb.domain.auth.service;
+package com.example.storeweb.common.security;
 
 import com.example.storeweb.domain.auth.entity.ActivityEntity;
 import com.example.storeweb.domain.auth.entity.RoleEntity;
