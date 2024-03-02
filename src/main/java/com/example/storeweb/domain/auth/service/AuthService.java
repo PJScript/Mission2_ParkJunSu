@@ -45,7 +45,9 @@ public class AuthService implements AuthServiceImpl {
                 .orElseThrow(() -> new CustomException(GlobalSystemStatus.BAD_REQUEST));
 
         log.info("에러발생 여부");
-        if (!password.equals(tenant.getPassword())) {
+        if (
+                passwordEncoderUtil.passwordEncoder().encode(password).equals(tenant.getPassword())
+        ) {
             throw new CustomException(GlobalSystemStatus.PASSWORD_OR_ACCOUNT_NOT_FOUND);
         }
 
@@ -62,6 +64,7 @@ public class AuthService implements AuthServiceImpl {
                 tokenInfo.getExpireTimeSecondFormat()
         );
     }
+
 
     @Transactional
     public TenantEntity getUserInfo(String jwt) {
