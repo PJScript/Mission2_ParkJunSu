@@ -1,6 +1,7 @@
 package com.example.storeweb.domain.auth.entity;
 
 import com.example.storeweb.common.entity.BaseEntity;
+import com.example.storeweb.domain.board.entity.UsedItemTradingBoardEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,6 +21,9 @@ public class TenantEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "tenant")
+    private List<UsedItemTradingBoardEntity> usedItemTradingBoardEntities;
 
     @OneToMany(mappedBy = "tenant")
     private List<TenantAccountGeneralEntity> tenantAccountGeneralEntities;
