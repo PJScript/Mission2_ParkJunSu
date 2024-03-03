@@ -9,4 +9,11 @@ public class NoFilterUrlPattern {
             "^/v1/auth/test$",
             "^/v1/auth/user/account/.*$"
     );
+
+    public static final List<String> PERMIT_ALL_URL_PATTERNS_02 = List.of(
+            "^/v1/auth/join$",
+            "^/v1/auth/login$",
+            "^/v1/auth/test$",
+            "^/v1/auth/user/account/.*$"
+    );
 }

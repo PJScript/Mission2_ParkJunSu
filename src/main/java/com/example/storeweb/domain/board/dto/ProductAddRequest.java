@@ -1,4 +1,4 @@
-package com.example.storeweb.domain.status.dto;
+package com.example.storeweb.domain.board.dto;
 
 
 import lombok.Getter;
