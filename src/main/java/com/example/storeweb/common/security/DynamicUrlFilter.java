@@ -29,7 +29,7 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
     public DynamicUrlFilter(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
         initializeUrlRoleMappings();
-        permitAllPatterns = NoFilterUrlPattern.PERMIT_ALL_URL_PATTERNS.stream()
+        permitAllPatterns = NoFilterUrlPattern.PERMIT_ALL_URL_PATTERNS_02.stream()
                 .map(Pattern::compile)
                 .collect(Collectors.toList());
     }
@@ -70,7 +70,8 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
 
         Set<String> userAuthorities = getUserAuthorities(authentication);
         Set<String> requiredRoles = urlRoleMappings.getOrDefault(requestUrl, Collections.emptySet());
-        boolean isAuthorized = requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(userAuthorities::contains);
+        boolean isUrlMapped = urlRoleMappings.containsKey(requestUrl);
+        boolean isAuthorized = isUrlMapped && (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(userAuthorities::contains));
 
         if (!isAuthorized) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");

@@ -115,9 +115,6 @@ public class AuthService implements AuthServiceImpl {
     public TenantEntity modifyTenant(TenantDto.UserInfoDto dto) {
         UserDetails userDetails = SecurityUtil.getCurrentUserDetails();
 
-        log.info(userDetails.getUsername() + " : 유저네임");
-        log.info(dto.getUuid() + " :  UUID");
-
         if (!userDetails.getUsername().equals(dto.getUuid())) {
             throw new CustomException(GlobalSystemStatus.ACCESS_DENIED);
         }

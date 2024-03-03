@@ -1,11 +1,11 @@
-package com.example.storeweb.domain.status.service;
+package com.example.storeweb.domain.board.service;
 
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.domain.auth.entity.TenantEntity;
 import com.example.storeweb.domain.auth.repo.TenantRepository;
 import com.example.storeweb.domain.board.entity.UsedItemTradingBoardEntity;
 import com.example.storeweb.domain.board.repo.BoardRepository;
-import com.example.storeweb.domain.status.dto.ProductAddRequest;
+import com.example.storeweb.domain.board.dto.ProductAddRequest;
 import com.example.storeweb.domain.status.entity.StatusEntity;
 import com.example.storeweb.domain.status.repo.StatusRepository;
 import com.example.storeweb.exception.CustomException;
@@ -13,7 +13,8 @@ import com.example.storeweb.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,8 +79,6 @@ public class BoardService {
         file.transferTo(destFile);
         return filePath;
     }
-
-
     public UsedItemTradingBoardEntity savePost(ProductAddRequest dto){
 
 
@@ -99,4 +98,8 @@ public class BoardService {
         return boardRepository.save(entity);
 
     }
+    public Page<UsedItemTradingBoardEntity> findPost(Pageable pageable){
+        return boardRepository.findAll(pageable);
+    }
+
 }
