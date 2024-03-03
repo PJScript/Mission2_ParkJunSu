@@ -1,10 +1,14 @@
 package com.example.storeweb.domain.board.controller;
 
 import com.example.storeweb.common.GlobalSystemStatus;
+import com.example.storeweb.domain.board.dto.ProductAddResponse;
+import com.example.storeweb.domain.board.entity.UsedItemTradingBoardEntity;
 import com.example.storeweb.domain.status.dto.ProductAddRequest;
 import com.example.storeweb.domain.status.service.BoardService;
 import com.example.storeweb.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,18 +31,27 @@ public class BoardController {
 
     //제목, 설명, 대표 이미지, 최소 가격
     @PostMapping("/product/add")
-    public void addBoardData(
+    public ResponseEntity<ProductAddResponse> addBoardData(
             @RequestPart(value = "thumbnail", required = false)
             MultipartFile file,
             @RequestPart
             ProductAddRequest
                     dto
-    )  {
+    ) {
+
+
         try {
-            boardService.productAdd(file, dto);
+            UsedItemTradingBoardEntity entity = boardService.productAdd(file, dto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ProductAddResponse.builder()
+                            .postId(entity.getId())
+                            .build());
+
         } catch (IOException e) {
             // 임시
             throw new CustomException(GlobalSystemStatus.BAD_REQUEST);
         }
+
+
     }
 }
