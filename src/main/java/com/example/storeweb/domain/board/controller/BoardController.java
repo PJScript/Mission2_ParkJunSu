@@ -33,7 +33,6 @@ public class BoardController {
 
     ) {
 
-
         Page<UsedItemTradingBoardEntity> entities = boardService.findPost(pageable);
         List<PostResponse> dtos = entities.stream()
                 .map(PostResponse::convertToDto)
@@ -42,12 +41,11 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 dtos
         );
-        // TODO: {name} 게시판의 내용을 조회 ( 활성 사용자만 조회할 수 있음 )
-        // TODO: /board?offset=1&limit=20
+
     }
 
 
-    //제목, 설명, 대표 이미지, 최소 가격
+
     @PostMapping("/product/add")
     public ResponseEntity<ProductAddResponse> addBoardData(
             @RequestPart(value = "thumbnail", required = false)
@@ -72,4 +70,7 @@ public class BoardController {
 
 
     }
+
+
+
 }

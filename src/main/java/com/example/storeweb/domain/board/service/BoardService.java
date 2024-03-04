@@ -3,7 +3,10 @@ package com.example.storeweb.domain.board.service;
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.domain.auth.entity.TenantEntity;
 import com.example.storeweb.domain.auth.repo.TenantRepository;
+import com.example.storeweb.domain.board.dto.SaveFile;
 import com.example.storeweb.domain.board.entity.UsedItemTradingBoardEntity;
+import com.example.storeweb.domain.board.entity.UsedItemTradingBoardImageEntity;
+import com.example.storeweb.domain.board.repo.BoardImageRepository;
 import com.example.storeweb.domain.board.repo.BoardRepository;
 import com.example.storeweb.domain.board.dto.ProductAddRequest;
 import com.example.storeweb.domain.status.entity.StatusEntity;
@@ -28,13 +31,13 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final StatusRepository statusRepository;
     private final TenantRepository tenantRepository;
+    private final BoardImageRepository boardImageRepository;
 
 
     // TODO: 이미지를 업로드하고 이미지의 경로를 DB에 기록, 게시글번호를 해당 DB에 기록
     // TODO: 게시글 생성 후 연결된 이미지 정보를 가져옴
     @Transactional
     public UsedItemTradingBoardEntity productAdd(MultipartFile file, ProductAddRequest dto) throws IOException {
-
         log.info(dto.getTitle() + "title");
         log.info(dto.getDesc() + "desc");
         log.info(dto.getMinAmount() + "min");
@@ -42,8 +45,11 @@ public class BoardService {
             log.info(file.getOriginalFilename() + "file");
 
             try {
-                saveFile(file);
-                return savePost(dto);
+                SaveFile savedFile = saveFile(file,true);
+                UsedItemTradingBoardEntity savedPost = savePost(dto);
+                saveFileUrl(savedFile,savedPost);
+
+                return savedPost;
 
             } catch (Exception e) {
                 log.warn(e + "익셉셥");
@@ -57,7 +63,7 @@ public class BoardService {
 
     }
 
-    private String saveFile(MultipartFile file) throws IOException {
+    private SaveFile saveFile(MultipartFile file, boolean isThumbnail) throws IOException {
         File directory = new File("media");
         if (!directory.exists()) {
             directory.mkdir();
@@ -73,11 +79,34 @@ public class BoardService {
         String newFileName = originalFilename.substring(0, originalFilename.lastIndexOf("."))
                 + "_" + currentTimeMillis + fileExtension;
 
-        File destFile = new File(directory.getAbsolutePath() + File.separator + newFileName);
-        String filePath = directory.getAbsolutePath() + File.separator + newFileName;
+        File destFile = new File(directory.getCanonicalPath() + File.separator + newFileName);
+        String workingDir = System.getProperty("user.dir");
+        String relativePath = destFile.getAbsolutePath().substring(workingDir.length() + 1);
 
         file.transferTo(destFile);
-        return filePath;
+
+        return SaveFile.builder()
+                .originalFileName(originalFilename)
+                .savedFilename(newFileName)
+                .savedFilePath(relativePath)
+                .isThumbnail(isThumbnail)
+                .build();
+
+
+    }
+    private void saveFileUrl(SaveFile dto, UsedItemTradingBoardEntity entity) {
+
+        UsedItemTradingBoardImageEntity boardImageEntity = UsedItemTradingBoardImageEntity.builder()
+                .url(dto.getSavedFilePath())
+                .board(entity)
+                .fileViewName(dto.getSavedFilename())
+                .originalFileName(dto.getOriginalFileName())
+                .isThumbnail(dto.isThumbnail())
+                .size(null)
+                .format(null)
+                .sort(null)
+                .build();
+        boardImageRepository.save(boardImageEntity);
     }
     public UsedItemTradingBoardEntity savePost(ProductAddRequest dto){
 
