@@ -74,7 +74,7 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
         boolean isAuthorized = isUrlMapped && (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(userAuthorities::contains));
 
         if (!isAuthorized) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied");
             return;
         }
 
