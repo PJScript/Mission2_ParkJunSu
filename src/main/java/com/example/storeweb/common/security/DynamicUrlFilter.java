@@ -74,7 +74,7 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // 인증되지 않은 사용자에 대한 처리
+
         if (authentication == null || !authentication.isAuthenticated()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication is required");
             return;
@@ -85,9 +85,8 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
         boolean isUrlMapped = !requiredRoles.isEmpty();
         boolean isAuthorized = isUrlMapped && (requiredRoles.stream().anyMatch(userAuthorities::contains));
 
-        log.info(isUrlMapped + "IS URL MAPPING");
         if (!isAuthorized) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied CC");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied");
             return;
         }
 

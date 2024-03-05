@@ -39,9 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         TenantEntity tenant = tenantRepository.findTenantEntityByUuid(uuid)
                 .orElseThrow(() -> new UsernameNotFoundException("Tenant not found with uuid: " + uuid));
 
-        // 특정 사용자의 역할을 조회합니다.
         RoleEntity role = tenant.getRole();
-
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getValue()));
 
         return new User(tenant.getUuid(), tenant.getPassword(), authorities);
@@ -53,9 +51,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         TenantEntity tenant = tenantRepository.findByAccount(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with account: " + username));
 
-        // 특정 사용자의 역할을 조회합니다.
-        RoleEntity role = tenant.getRole();
 
+        RoleEntity role = tenant.getRole();
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getValue()));
 
         return new User(tenant.getAccount(), tenant.getPassword(), authorities);

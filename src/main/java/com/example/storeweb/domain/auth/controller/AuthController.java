@@ -94,20 +94,15 @@ public class AuthController {
 
         authService.createPreActiveTenant(dto);
 
-        // TODO: 비밀번호 암호화 후 저회
-        log.debug("account" + dto.getAccount());
-        log.debug("password" + dto.getPassword());
 
         return ResponseEntity.status(CREATED)
                 .body(BaseResponse.builder().systemMessage("회원가입 성공").build());
 
-        // TODO: 회원가입시 보내온 password를 암호화 하여 DB에 저장하고 이때 uuid 생성하여 uuid 필드에 같이 저장
     }
 
 
     @PutMapping("/user")
     public ResponseEntity<TenantDto.UserInfoDto> modifyTenant(@RequestBody TenantDto.UserInfoDto dto) {
-        // 닉네임,이름, 연령대, 전화번호 모두 있다면 권한 설정 변경
         TenantEntity entity = authService.modifyTenant(dto);
 
         return ResponseEntity.status(OK).body(

@@ -5,6 +5,8 @@ likelion backend mission
 ## 프로젝트
 일반 사용자는 중고거래를, 사업자는 인터넷 쇼핑몰을 운영할 수 있게 해주는 쇼핑몰 사이트
 
+
+
 ## 실행 및 테스트
 
 
@@ -16,7 +18,33 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 아래 파일을 다운 받고 postman 에서 테스트 해주세요 <br />
 [misson.postman_collection.json](https://github.com/PJScript/Mission2_ParkJunSu/files/14490775/misson.postman_collection.json)
 
+## 기능 구현 내용
+- 로그인
+- 회원가입
+- 유저정보 조회
+- 유저정보 수정
+- 유저 중복체크
+- 물품등록
+- 물품조회
+- 물품수정
+- 물품삭제
 
+### 세부내용
+- 로그인시 JWT 발급 
+- 회원가입시 비밀번호 암호화 
+- 유저정보 조회시 본인 데이터만 조회할 수 있게 권한 체크
+- 유저정보 수정시 본인 데이터만 조회할 수 있게 권한 체크
+- 유저정보 중복체크
+- 물품 등록시 활성유저만 가능하도록 권한 체크
+- 물품 조회시 활성유저만 가능 하도록 권한 체크
+- 물품 수정시 본인의 게시글인지 JWT와 비교하여 권한 체크
+- 물품 삭제시 본인의 게시글인지 JWT와 비교하여 권한체크
+- DB를 활용한 RBAC ( Role Based Access Control ) 적용 해보았음
+- Activity 테이블에서 엔드포인트별 접근 가능한 권한을 추가하거나 수정할 수 있음
+- Role 테이블에서 권한을 추가할 수 있음
+- Status 테이블에서 서비스내의 모든 상태 값을 정의할 수 있음 ( 판매중, 판매완료, 사업자 전환 요청중 등 )
+- [GlobalSystemStatus.java](src%2Fmain%2Fjava%2Fcom%2Fexample%2Fstoreweb%2Fcommon%2FGlobalSystemStatus.java) 에서 공통 에러 및 응답을 정의할 수 있음
+- [ExceptionHandlerFilter.java](src%2Fmain%2Fjava%2Fcom%2Fexample%2Fstoreweb%2Fcommon%2Fsecurity%2FExceptionHandlerFilter.java) 에서 공통 에러를 핸들링 할 수 있음
 
 
 

@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtUtil JwtUtil;
-    // 사용자 정보를 찾기위한 UserDetailsService 또는 Manager
     private final CustomUserDetailsService customUserDetailsService;
     private List<Pattern> permitAllPatterns;
 
@@ -92,14 +91,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 log.info("authority: {}", authority.getAuthority());
             }
 
-            // 인증 정보 생성
+
             AbstractAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             userDetails,
                             token,
                             userDetails.getAuthorities()
                     );
-            // 인증 정보 등록
+
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
@@ -108,8 +107,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             throw new CustomJwtException(GlobalSystemStatus.TOKEN_EXPIRED);
         }
-        // 5. 다음 필터 호출
-        // doFilter를 호출하지 않으면 Controller까지 요청이 도달하지 못한다.
+
         filterChain.doFilter(request, response);
     }
 }
