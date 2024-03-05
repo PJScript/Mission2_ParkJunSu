@@ -41,10 +41,20 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
         List<ActivityEntity> activities = activityRepository.findAll();
         for (ActivityEntity activity : activities) {
             String roleValue = activity.getRole().getValue();
-            urlRoleMappings.computeIfAbsent(activity.getUrlPattern(), k -> new HashSet<>())
+            String regex = activity.getUrlPattern();
+            urlRoleMappings.computeIfAbsent(regex, k -> new HashSet<>())
                     .add(roleValue);
         }
     }
+
+    private Set<String> getMatchingRoles(String requestUrl) {
+        return urlRoleMappings.entrySet().stream()
+                .filter(entry -> requestUrl.matches(entry.getKey()))
+                .flatMap(entry -> entry.getValue().stream())
+                .collect(Collectors.toSet());
+    }
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -71,9 +81,9 @@ public class DynamicUrlFilter extends OncePerRequestFilter {
         }
 
         Set<String> userAuthorities = getUserAuthorities(authentication);
-        Set<String> requiredRoles = urlRoleMappings.getOrDefault(requestUrl, Collections.emptySet());
-        boolean isUrlMapped = urlRoleMappings.containsKey(requestUrl);
-        boolean isAuthorized = isUrlMapped && (requiredRoles.isEmpty() || requiredRoles.stream().anyMatch(userAuthorities::contains));
+        Set<String> requiredRoles = getMatchingRoles(requestUrl);
+        boolean isUrlMapped = !requiredRoles.isEmpty();
+        boolean isAuthorized = isUrlMapped && (requiredRoles.stream().anyMatch(userAuthorities::contains));
 
         log.info(isUrlMapped + "IS URL MAPPING");
         if (!isAuthorized) {
