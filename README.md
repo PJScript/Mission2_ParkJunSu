@@ -16,7 +16,28 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 클론 후 파일을 실행 해주세요
 
 아래 파일을 다운 받고 postman 에서 테스트 해주세요 <br />
-[misson.postman_collection.json](https://github.com/PJScript/Mission2_ParkJunSu/files/14490775/misson.postman_collection.json)
+[mission.postman_collection.json](https://github.com/PJScript/Mission2_ParkJunSu/files/14491536/mission.postman_collection.json)
+
+
+<br />
+
+### 테스트 방법
+
+위 파일을 다운받고 postman 에서 열어보면 아래와 같이 TEST_ 접두사가 붙은 폴더가 있습니다. <br />
+![스크린샷 2024-03-05 오후 3 40 16](https://github.com/PJScript/Mission2_ParkJunSu/assets/74460103/d0c513e5-4015-4714-804c-b778d20e21fe)
+<br />
+TEST_ 접두사가 붙은 폴더에 테스트 주제별로 필요한 요청들을 묶어두었습니다. <br /> 
+폴더에있는 순서대로 요청을 보내서 테스트 하시거나 직접 auth, board 폴더에서 하나씩 요청 보내셔서 테스트 하시면 됩니다. 
+
+<br />
+
+폴더 및 각 요청들을 누르면 상세 설명이 쓰여있습니다.
+해당 설명을 참고하여 테스트 해주세요
+
+
+
+
+
 
 ## 기능 구현 내용
 #### 중고거래 ( 진행중 )
