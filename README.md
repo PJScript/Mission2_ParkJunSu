@@ -19,6 +19,7 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 [misson.postman_collection.json](https://github.com/PJScript/Mission2_ParkJunSu/files/14490775/misson.postman_collection.json)
 
 ## 기능 구현 내용
+#### 중고거래 ( 진행중 )
 - 로그인
 - 회원가입
 - 유저정보 조회
@@ -28,6 +29,13 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 - 물품조회
 - 물품수정
 - 물품삭제
+#### 스토어 ( 미완료 )
+#### 추가 과제 ( 미완료 )
+
+
+
+
+
 
 ### 세부내용
 - 로그인시 JWT 발급 
