@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ProductAddResponse {
+public class BoardProductResponse {
   private Long postId;
 }

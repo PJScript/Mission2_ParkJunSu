@@ -2,9 +2,9 @@ package com.example.storeweb.domain.board.controller;
 
 import com.example.storeweb.common.GlobalSystemStatus;
 import com.example.storeweb.domain.board.dto.PostResponse;
-import com.example.storeweb.domain.board.dto.ProductAddResponse;
+import com.example.storeweb.domain.board.dto.BoardProductResponse;
 import com.example.storeweb.domain.board.entity.UsedItemTradingBoardEntity;
-import com.example.storeweb.domain.board.dto.ProductAddRequest;
+import com.example.storeweb.domain.board.dto.BoardItem;
 import com.example.storeweb.domain.board.service.BoardService;
 import com.example.storeweb.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,13 +44,12 @@ public class BoardController {
     }
 
 
-
     @PostMapping("/product/add")
-    public ResponseEntity<ProductAddResponse> addBoardData(
+    public ResponseEntity<BoardProductResponse> addBoardData(
             @RequestPart(value = "thumbnail", required = false)
             MultipartFile file,
             @RequestPart
-            ProductAddRequest
+            BoardItem
                     dto
     ) {
 
@@ -59,7 +57,7 @@ public class BoardController {
         try {
             UsedItemTradingBoardEntity entity = boardService.productAdd(file, dto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ProductAddResponse.builder()
+                    .body(BoardProductResponse.builder()
                             .postId(entity.getId())
                             .build());
 
@@ -71,6 +69,22 @@ public class BoardController {
 
     }
 
+
+    @PutMapping("/product/{id}/update")
+    public ResponseEntity<BoardProductResponse> updateBoardData(
+            @PathVariable("id")
+            Long id,
+            @RequestBody
+            BoardItem dto) {
+        UsedItemTradingBoardEntity entity = boardService.productUpdate(dto, id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(BoardProductResponse.builder()
+                .postId(entity.getId()).build()
+        );
+
+        // TODO: dto를 받아 Board를 업데이트
+        //
+    }
 
 
 }
