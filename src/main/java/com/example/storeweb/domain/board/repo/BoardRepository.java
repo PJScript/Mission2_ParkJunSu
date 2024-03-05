@@ -12,5 +12,4 @@ public interface BoardRepository extends JpaRepository<UsedItemTradingBoardEntit
 
     Page<UsedItemTradingBoardEntity> findAll(Pageable pageable);
     Page<UsedItemTradingBoardEntity> findAllByIsDeleteFalse(Pageable pageable);
-
 }
