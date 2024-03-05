@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<UsedItemTradingBoardEntity, Long> {
 
     Page<UsedItemTradingBoardEntity> findAll(Pageable pageable);
+    Page<UsedItemTradingBoardEntity> findAllByIsDeleteFalse(Pageable pageable);
+
 }
