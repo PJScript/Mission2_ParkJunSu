@@ -1,5 +1,22 @@
-# Mission_-
+# Mission
 likelion backend mission
+
+
+## 프로젝트
+일반 사용자는 중고거래를, 사업자는 인터넷 쇼핑몰을 운영할 수 있게 해주는 쇼핑몰 사이트
+
+## 실행 및 테스트
+
+
+```sh
+git clone https://github.com/PJScript/Mission2_ParkJunSu.git
+```
+클론 후 파일을 실행 해주세요
+
+아래 파일을 다운 받고 postman 에서 테스트 해주세요
+
+
+
 
 
 ## Commit
