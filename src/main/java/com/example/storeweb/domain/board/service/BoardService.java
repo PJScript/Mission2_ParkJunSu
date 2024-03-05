@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -180,7 +181,11 @@ public class BoardService {
 
         String TYPE = "BOARD_ITEM";
         String VALUE = "ON_SALE";
-        StatusEntity status = statusRepository.findStatusEntityByValueAndType(VALUE, TYPE);
+        Optional<StatusEntity> status = statusRepository.findStatusEntityByValueAndType(VALUE, TYPE);
+        if(status.isEmpty()){
+            throw new CustomException(GlobalSystemStatus.NOT_FOUND);
+        }
+
         TenantEntity tenant = tenantRepository.findTenantEntityByUuid(SecurityUtil.getCurrentUserDetails().getUsername())
                 .orElseThrow(() -> new CustomException(GlobalSystemStatus.TOKEN_INVALID));
         UsedItemTradingBoardEntity entity = UsedItemTradingBoardEntity.builder()
@@ -188,7 +193,7 @@ public class BoardService {
                 .desc(dto.getDesc())
                 .tenant(tenant)
                 .minAmount(dto.getMinAmount())
-                .status(status)
+                .status(status.get())
                 .build();
 
         return boardRepository.save(entity);
