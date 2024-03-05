@@ -13,7 +13,10 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 ```
 클론 후 파일을 실행 해주세요
 
-아래 파일을 다운 받고 postman 에서 테스트 해주세요
+아래 파일을 다운 받고 postman 에서 테스트 해주세요 <br />
+[misson.postman_collection.json](https://github.com/PJScript/Mission2_ParkJunSu/files/14490775/misson.postman_collection.json)
+
+
 
 
 
