@@ -36,6 +36,7 @@ public class BoardService {
     private final BoardImageRepository boardImageRepository;
 
 
+
     // TODO: 이미지를 업로드하고 이미지의 경로를 DB에 기록, 게시글번호를 해당 DB에 기록
     // TODO: 게시글 생성 후 연결된 이미지 정보를 가져옴
     @Transactional
@@ -66,7 +67,7 @@ public class BoardService {
     }
 
     @Transactional
-    public UsedItemTradingBoardEntity productUpdate(BoardItem dto, Long id) {
+    public UsedItemTradingBoardEntity updatePost(BoardItem dto, Long id) {
 
         String currentUserUuid = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UsedItemTradingBoardEntity> boardEntity = boardRepository.findById(id);
@@ -96,6 +97,35 @@ public class BoardService {
 
 
         return boardRepository.save(entity);
+    }
+
+    public void deletePost(Long id){
+        Optional<UsedItemTradingBoardEntity> boardEntity = boardRepository.findById(id);
+        if(boardEntity.isEmpty()){
+            throw new CustomException(GlobalSystemStatus.BAD_REQUEST);
+        }
+
+        String uuid = SecurityUtil.getCurrentUserDetails().getUsername();
+
+        log.info(uuid + "[currentUserDetail]");
+        log.info(boardEntity.get().getTenant().getUuid() + "[tenantUuid]");
+        if(!boardEntity.get().getTenant().getUuid().equals(uuid)){
+            throw new CustomException(GlobalSystemStatus.ACCESS_DENIED);
+        }
+
+
+         UsedItemTradingBoardEntity entity = UsedItemTradingBoardEntity.builder()
+                .id(boardEntity.get().getId())
+                .title(boardEntity.get().getTitle())
+                .desc(boardEntity.get().getDesc())
+                .minAmount(boardEntity.get().getMinAmount())
+                .status(boardEntity.get().getStatus())
+                .tenant(boardEntity.get().getTenant())
+                 .isDelete(true)
+                .build();
+
+        boardRepository.save(entity);
+
     }
 
     private SaveFile saveFile(MultipartFile file, boolean isThumbnail) throws IOException {
@@ -168,6 +198,8 @@ public class BoardService {
     public Page<UsedItemTradingBoardEntity> findPost(Pageable pageable) {
         return boardRepository.findAll(pageable);
     }
+
+
 
 
 }

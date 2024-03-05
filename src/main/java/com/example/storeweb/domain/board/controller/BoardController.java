@@ -8,6 +8,7 @@ import com.example.storeweb.domain.board.dto.BoardItem;
 import com.example.storeweb.domain.board.service.BoardService;
 import com.example.storeweb.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/board")
@@ -76,14 +78,22 @@ public class BoardController {
             Long id,
             @RequestBody
             BoardItem dto) {
-        UsedItemTradingBoardEntity entity = boardService.productUpdate(dto, id);
+        UsedItemTradingBoardEntity entity = boardService.updatePost(dto, id);
 
         return ResponseEntity.status(HttpStatus.OK).body(BoardProductResponse.builder()
                 .postId(entity.getId()).build()
         );
 
-        // TODO: dto를 받아 Board를 업데이트
-        //
+    }
+
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<Object> deleteBoardDate(
+            @PathVariable("id")
+            Long id
+    ){
+        log.info(id + " TEST ");
+        boardService.deletePost(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
 

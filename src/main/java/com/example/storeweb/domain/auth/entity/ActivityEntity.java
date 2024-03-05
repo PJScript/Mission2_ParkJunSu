@@ -4,11 +4,14 @@ import com.example.storeweb.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
-@RequiredArgsConstructor
+@SuperBuilder
+@NoArgsConstructor
 @Table(name = "activity")
 
 public class ActivityEntity extends BaseEntity {
