@@ -196,7 +196,7 @@ public class BoardService {
     }
 
     public Page<UsedItemTradingBoardEntity> findPost(Pageable pageable) {
-        return boardRepository.findAll(pageable);
+        return boardRepository.findAllByIsDeleteFalse(pageable);
     }
 
 
