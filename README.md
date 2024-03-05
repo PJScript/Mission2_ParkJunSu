@@ -40,11 +40,15 @@ git clone https://github.com/PJScript/Mission2_ParkJunSu.git
 - 물품 수정시 본인의 게시글인지 JWT와 비교하여 권한 체크
 - 물품 삭제시 본인의 게시글인지 JWT와 비교하여 권한체크
 - DB를 활용한 RBAC ( Role Based Access Control ) 적용 해보았음
+https://github.com/PJScript/Mission2_ParkJunSu/blob/45698d0c4aeab3667f23e348415cae19b6ed5a21/src/main/java/com/example/storeweb/common/security/DynamicUrlFilter.java#L1-L101
 - Activity 테이블에서 엔드포인트별 접근 가능한 권한을 추가하거나 수정할 수 있음
+https://github.com/PJScript/Mission2_ParkJunSu/blob/45698d0c4aeab3667f23e348415cae19b6ed5a21/src/main/java/com/example/storeweb/domain/auth/entity/ActivityEntity.java#L11-L36
 - Role 테이블에서 권한을 추가할 수 있음
 - Status 테이블에서 서비스내의 모든 상태 값을 정의할 수 있음 ( 판매중, 판매완료, 사업자 전환 요청중 등 )
-- [GlobalSystemStatus.java](src%2Fmain%2Fjava%2Fcom%2Fexample%2Fstoreweb%2Fcommon%2FGlobalSystemStatus.java) 에서 공통 에러 및 응답을 정의할 수 있음
-- [ExceptionHandlerFilter.java](src%2Fmain%2Fjava%2Fcom%2Fexample%2Fstoreweb%2Fcommon%2Fsecurity%2FExceptionHandlerFilter.java) 에서 공통 에러를 핸들링 할 수 있음
+- 공통 에러 및 응답을 정의할 수 있음
+https://github.com/PJScript/Mission2_ParkJunSu/blob/45698d0c4aeab3667f23e348415cae19b6ed5a21/src/main/java/com/example/storeweb/common/GlobalSystemStatus.java#L1-L31
+- 공통 에러를 핸들링 할 수 있음
+https://github.com/PJScript/Mission2_ParkJunSu/blob/45698d0c4aeab3667f23e348415cae19b6ed5a21/src/main/java/com/example/storeweb/common/security/ExceptionHandlerFilter.java#L1-L49
 
 
 
