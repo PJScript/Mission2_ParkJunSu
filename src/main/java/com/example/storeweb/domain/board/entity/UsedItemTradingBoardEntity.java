@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 /**
  * 중고거래 상품 목록
  */
@@ -39,6 +41,7 @@ public class UsedItemTradingBoardEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
+
 
 
 
